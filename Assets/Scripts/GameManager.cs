@@ -14,20 +14,6 @@ public class GameManager : MonoBehaviour
         selectedCity = null;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        string troops = "";
-        if (selectedCity != null) {
-            foreach(Troop troop in selectedCity.friendlyUnits) {
-                troops += troop.unitName + ", ";
-            }
-
-            print("Friendly troops: " + selectedCity.friendlyUnits.Count);
-            print(troops);
-        }
-    }
-
     /// <summary>
     /// Sets the selected city.
     /// </summary>

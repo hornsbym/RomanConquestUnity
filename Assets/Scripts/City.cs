@@ -18,7 +18,7 @@ public class City
     private GameObject cityMarker {get; set;}
 
     // Tracks adjacent cities
-    private List<City> neighbors;
+    public List<City> neighbors {get; set;}
 
     // Tracks units within the city
     private List<Unit> hostileUnits;
@@ -30,7 +30,8 @@ public class City
     /// <summary>
     /// Accepts an optional parameter for which troops the city will be able to sell.
     /// </summary>
-    public City(string name, Vector3 position, TroopClassifications[] troopsForSale = null){
+    public City(string name, Vector3 position, TroopClassifications[] troopsForSale = null)
+    {
         cityName = name;
         cityPosition = position;
         cityMarker = MapManager.instance.SpawnCityMarker(this);
@@ -44,9 +45,24 @@ public class City
     }
 
     /// <summary>
+    /// If no road exists between the city and its neighbors, 
+    /// creates the road.
+    /// </summary>
+    public void ConnectWithNeighbors() 
+    {
+        // Validates the road doesn't exist first
+        foreach(City neighbor in neighbors) {
+            // If we get here, the road doesn't exist so we should make one and 
+            // add it to the MapManager's roads list.
+            MapManager.instance.TryToCreateRoad(this, neighbor);
+        }
+    }
+
+    /// <summary>
     /// Adds the provided unit to the city's list of units.
     /// </summary>
-    public void AddUnit(Troop troop) {
+    public void AddUnit(Troop troop) 
+    {
         friendlyUnits.Add(troop);
     }
 }

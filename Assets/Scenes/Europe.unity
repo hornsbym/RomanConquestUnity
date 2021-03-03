@@ -1576,10 +1576,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   selectedCityLabel: {fileID: 8406539}
   purchasePanel: {fileID: 697963197}
-  friendlyUnitsPanel: {fileID: 1610356214}
   purchaseButtonAnchor: {fileID: 1587440749}
   purchaseTroopButtonPrefab: {fileID: 5069682157147005430, guid: 1f4bac01ac26ced40be5b1b767e66b3c,
     type: 3}
+  friendlyUnitsPanel: {fileID: 1610356214}
+  friendlyUnitPrefab: {fileID: 7734567833439503810, guid: c415b1cc9d3e1a849b67c5ea2882b425,
+    type: 3}
+  friendlyUnitScrollview: {fileID: 1157860591}
 --- !u!1 &1808886878
 GameObject:
   m_ObjectHideFlags: 0

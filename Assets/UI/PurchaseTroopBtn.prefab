@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4474919668039236353}
   - component: {fileID: 3272505960567023712}
   - component: {fileID: 5069682157147005430}
+  - component: {fileID: -930517528182302254}
   m_Layer: 5
   m_Name: PurchaseTroopBtn
   m_TagString: Untagged
@@ -119,6 +120,19 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!65 &-930517528182302254
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3674832400589812627}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &4269847103918380401
 GameObject:
   m_ObjectHideFlags: 0
