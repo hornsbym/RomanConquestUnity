@@ -10,8 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 3158877196165743555}
   - component: {fileID: 7733185746138179500}
+  - component: {fileID: 8184936848833618900}
   - component: {fileID: 6581834030547295007}
   - component: {fileID: 2645357053963461188}
+  - component: {fileID: 3405490267926630075}
   m_Layer: 0
   m_Name: RoadMarker
   m_TagString: Untagged
@@ -28,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 487645825457502465}
   m_LocalRotation: {x: -0.49472255, y: 0.49472246, z: 0.50522244, w: 0.5052224}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.05, y: 0.1, z: 0.05}
+  m_LocalScale: {x: 0.07, y: 0.1, z: 0.07}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -41,6 +43,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 487645825457502465}
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &8184936848833618900
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 487645825457502465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 910029a1d8de5e145aa0516b75417389, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!23 &6581834030547295007
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -94,3 +108,17 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!114 &3405490267926630075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 487645825457502465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e57fe0c40faf0347b5025cd32ee384d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unselectedMaterial: {fileID: 2100000, guid: 8489f07db63ba1749ba56291d5d59213, type: 2}
+  selectedMaterial: {fileID: 2100000, guid: e9dd6630054a165498a77252ab6b121c, type: 2}

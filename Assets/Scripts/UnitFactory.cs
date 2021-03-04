@@ -2,34 +2,55 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class UnitFactory
+public class UnitFactory: MonoBehaviour
 {   
-    private static int infantryCount = 0;
-    private static int rangedCount = 0;
-    private static int cavalryCount = 0;
-    
-    public static Troop GenerateInfantry() {
-        infantryCount++;
-        return new Troop($"{UnitFactory.countToOrdinal(infantryCount)} Infantry", TroopClassifications.INFANTRY);
+
+    public static UnitFactory instance;
+
+    public GameObject troopPrefab;
+
+    private int infantryCount = 0;
+    private int rangedCount = 0;
+    private int cavalryCount = 0;
+
+    void Start() {
+        instance = this;
     }
 
-    public static Troop GenerateRanged()
+    public Troop GenerateInfantry() {
+        infantryCount++;
+        GameObject.Instantiate(troopPrefab);
+        Troop troop = troopPrefab.AddComponent<Troop>();
+        troop.unitName = $"{countToOrdinal(infantryCount)} Infantry";
+        troop.InitializeTroop(TroopClassifications.INFANTRY);
+        return troop;
+    }
+
+    public Troop GenerateRanged()
     {
         rangedCount++;
-        return new Troop($"{UnitFactory.countToOrdinal(rangedCount)} Ranged", TroopClassifications.RANGED);
+        GameObject.Instantiate(troopPrefab);
+        Troop troop = troopPrefab.AddComponent<Troop>();
+        troop.unitName = $"{countToOrdinal(rangedCount)} Ranged";
+        troop.InitializeTroop(TroopClassifications.RANGED);
+        return troop;
     }
     
-    public static Troop GenerateCavalry()
+    public Troop GenerateCavalry()
     {
         cavalryCount++;
-        return new Troop($"{UnitFactory.countToOrdinal(cavalryCount)} Cavalry", TroopClassifications.CAVALRY);
+        GameObject.Instantiate(troopPrefab);
+        Troop troop = troopPrefab.AddComponent<Troop>();
+        troop.unitName = $"{countToOrdinal(cavalryCount)} Cavalry";
+        troop.InitializeTroop(TroopClassifications.CAVALRY);
+        return troop;
     }
 
     /// <summary>
     /// Creates an ordinal number from an integer.
     /// Used for naming units.
     /// </summary>
-    private static string countToOrdinal(int count) {
+    private string countToOrdinal(int count) {
         string stringCount = count.ToString();
         char lastLetter = stringCount[stringCount.Length - 1];
 

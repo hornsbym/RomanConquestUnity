@@ -10,7 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 2823202996636314822}
   - component: {fileID: 105991098015868591}
+  - component: {fileID: 6188888397709958171}
   - component: {fileID: 4985136856516502192}
+  - component: {fileID: 207316924010146496}
   m_Layer: 5
   m_Name: FriendlyUnitLabel
   m_TagString: Untagged
@@ -45,6 +47,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7734567833439503810}
   m_CullTransparentMesh: 0
+--- !u!114 &6188888397709958171
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7734567833439503810}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 821a1bfcaa5542740b769033a4280389, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &4985136856516502192
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -78,3 +92,16 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: FriendlyUnit
+--- !u!65 &207316924010146496
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7734567833439503810}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}

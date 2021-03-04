@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class HighlightCity : MonoBehaviour
+public class HighlightObject : MonoBehaviour
 {
     public Material unselectedMaterial;
     public Material selectedMaterial;

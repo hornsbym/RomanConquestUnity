@@ -1,13 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 public class Troop : Unit 
 {
-    public Troop(string name, TroopClassifications classification) 
+    public void InitializeTroop(TroopClassifications classification) 
     {
-        unitName = name;
-
         switch(classification) {
             case TroopClassifications.INFANTRY:
                 applyInfantryStats();
@@ -24,7 +18,8 @@ public class Troop : Unit
     /// <summary>
     /// Gives the troop the starting stats of an infantry unit.
     /// </summary>
-    private void applyInfantryStats(){
+    private void applyInfantryStats()
+    {
         melee = BaseStats.INFANTRY_MELEE;
         ranged = BaseStats.INFANTRY_RANGED;
         movement = BaseStats.INFANTRY_MOVEMENT;

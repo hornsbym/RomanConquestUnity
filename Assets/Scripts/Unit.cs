@@ -1,17 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
 using UnityEngine;
 
-abstract public class Unit
+abstract public class Unit : MonoBehaviour
 {
     public string unitName {get; set;}
-    protected int health { get; set; }
-    protected int melee { get; set; }
-    protected int ranged { get; set; }
-    protected int movement { get; set; }
-    protected int defense { get; set; }
-    protected int cost { get; set; }
-    protected int xp { get; set; }
+    public int health { get; set; }
+    public int melee { get; set; }
+    public int ranged { get; set; }
+    public int movement { get; set; }
+    public int defense { get; set; }
+    public int cost { get; set; }
+    public int xp { get; set; }
+    public int xpToNextLevel { get; set; }
     public int level { get; set; }
 
     /// <summary>
@@ -20,4 +22,5 @@ abstract public class Unit
     public virtual void TakeDamage(int damage){
         health -= damage;
     }
+
 }
