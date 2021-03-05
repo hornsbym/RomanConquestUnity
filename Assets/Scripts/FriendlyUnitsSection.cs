@@ -36,10 +36,10 @@ public class FriendlyUnitsSection : MonoBehaviour
         /// Create and add a new label for each unit.
         foreach (Unit unit in friendlyUnits)
         {
-
-            print(unit.unitName);
             GameObject friendlyUnitCard = Instantiate(friendlyUnitPrefab, contentRectTransform, false);
             friendlyUnitCard.GetComponentInChildren<Text>().text = unit.unitName;
+            UnitListing listing = friendlyUnitCard.AddComponent<UnitListing>();
+            listing.unit = unit;
             friendlyUnitCard.transform.SetParent(contentRectTransform);
         }
     }

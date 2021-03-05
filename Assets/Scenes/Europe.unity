@@ -322,10 +322,10 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 220, y: 169}
+  m_AnchoredPosition: {x: 142, y: 125}
   m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &510685614
+--- !u!1 &563455046
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -333,28 +333,43 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 510685615}
+  - component: {fileID: 563455047}
+  - component: {fileID: 563455048}
   m_Layer: 0
-  m_Name: UnitPrefab
+  m_Name: UnitFactory
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &510685615
+--- !u!4 &563455047
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 510685614}
+  m_GameObject: {fileID: 563455046}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1000, y: -1000, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &563455048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 563455046}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d49735b9f61dce4bbd8a48573a048db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  troopPrefab: {fileID: 3952886321750122428, guid: c01dd17510307a94fb1ea9a89b35c2b3,
+    type: 3}
 --- !u!1 &606913460
 GameObject:
   m_ObjectHideFlags: 0
@@ -496,7 +511,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 452, y: 170}
+  m_AnchoredPosition: {x: 452, y: 145}
   m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &951943642
@@ -828,7 +843,7 @@ MonoBehaviour:
   friendlyUnitPanelAnchor: {fileID: 894440965}
   unitDetailsWidgetPrefab: {fileID: 2510837068893381533, guid: 080f9a262baa04148b86ab988e9fab60,
     type: 3}
-  friendlyUnitDetailsWidgetAnchor: {fileID: 0}
+  friendlyUnitDetailsWidgetAnchor: {fileID: 286456586}
 --- !u!1 &1808886878
 GameObject:
   m_ObjectHideFlags: 0
@@ -953,8 +968,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -438, y: 177.7}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -438, y: 147}
+  m_SizeDelta: {x: 200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1001 &8321998719755057605
 PrefabInstance:

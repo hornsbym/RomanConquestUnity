@@ -69,7 +69,6 @@ public class City : Place
     /// </summary>
     public void AddUnit(Unit unit) 
     {   
-        print($"Added unit {unit.unitName}");
         friendlyUnits.Add(unit);
         UIManager.instance.DestroyFriendlyUnitsPanel();
         UIManager.instance.CreateFriendlyUnitsSection(this);

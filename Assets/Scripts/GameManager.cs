@@ -11,12 +11,14 @@ public class GameManager : MonoBehaviour
     {
         instance = this;
         placeSelection = null;
+        unitSelection = null;
     }
 
     /// <summary>
     /// Select a Unit.
     /// </summary>
     public void SelectUnit(Unit unit) {
+        print($"Selected unit: {unit}");
         unitSelection = unit;
         UIManager.instance.DestroyFriendlyUnitDetailsWidget();
         UIManager.instance.CreateFriendlyUnitDetailsWidget();
