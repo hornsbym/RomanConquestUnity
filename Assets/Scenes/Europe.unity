@@ -613,6 +613,55 @@ MonoBehaviour:
   mapSprite: {fileID: 1661184772}
   horizontalPanRate: 0.1
   verticalPanRate: 0.1
+--- !u!1 &1335302723
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1335302725}
+  - component: {fileID: 1335302724}
+  m_Layer: 0
+  m_Name: UnitCombiner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1335302724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1335302723}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02038214c8160e044a81b780c093f2b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  centuryPrefab: {fileID: 5315723208156176435, guid: 1e19ba667ab937e47b95da81f43dba34,
+    type: 3}
+  cohortPrefab: {fileID: 1877544535273343755, guid: 891069f52ab83ab4f9cbf5d87eb02d51,
+    type: 3}
+  legionPrefab: {fileID: 7001334429184814900, guid: c8cb3d368c8f2684ca119698f868ef1b,
+    type: 3}
+--- !u!4 &1335302725
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1335302723}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1544856612
 GameObject:
   m_ObjectHideFlags: 0

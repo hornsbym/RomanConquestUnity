@@ -71,7 +71,6 @@ public class UIManager : MonoBehaviour
         selectedCityLabel.SetActive(true);
     }
 
-
     /// <summary>
     /// Adds city-specific components to the UI.
     /// </summary>
@@ -113,6 +112,9 @@ public class UIManager : MonoBehaviour
         friendlyUnitDetailsInstance = null;
     }
 
+    /// <summary>
+    /// Removes the friendly units panel from the UI.
+    /// </summary>
     public void DestroyFriendlyUnitsPanel() 
     {
         Destroy(friendlyUnitsPanelInstance);
@@ -139,10 +141,5 @@ public class UIManager : MonoBehaviour
     {
         Destroy(purchasePanelInstance);
         purchasePanelInstance = null;
-    }
-
-    public void GetFriendlySelectedUnit(GameObject marker) 
-    {
-        // return friendlyUnitsPanelInstance.GetFriendlySelectedUnit(marker);
     }
 }

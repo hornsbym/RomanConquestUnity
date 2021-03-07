@@ -7,7 +7,7 @@ public class UnitFactory: MonoBehaviour
 
     public static UnitFactory instance;
 
-    public GameObject troopPrefab;
+    public GameObject emptyUnitPrefab;
 
     private int infantryCount = 0;
     private int rangedCount = 0;
@@ -17,30 +17,39 @@ public class UnitFactory: MonoBehaviour
         instance = this;
     }
 
+    /// <summary>
+    /// Instantiates a new game object with an attached Troop script.
+    /// Returns the Troop object in that script.
+    /// </summary>
     public Troop GenerateInfantry() {
         infantryCount++;
-        GameObject.Instantiate(troopPrefab);
-        Troop troop = troopPrefab.AddComponent<Troop>();
+        Troop troop = GameObject.Instantiate(emptyUnitPrefab).AddComponent<Troop>();
         troop.unitName = $"{countToOrdinal(infantryCount)} Infantry";
         troop.InitializeTroop(TroopClassifications.INFANTRY);
         return troop;
     }
 
+    /// <summary>
+    /// Instantiates a new game object with an attached Ranged script.
+    /// Returns the Ranged object in that script.
+    /// </summary>
     public Troop GenerateRanged()
     {
         rangedCount++;
-        GameObject.Instantiate(troopPrefab);
-        Troop troop = troopPrefab.AddComponent<Troop>();
+        Troop troop = GameObject.Instantiate(emptyUnitPrefab).AddComponent<Troop>();
         troop.unitName = $"{countToOrdinal(rangedCount)} Ranged";
         troop.InitializeTroop(TroopClassifications.RANGED);
         return troop;
     }
-    
+
+    /// <summary>
+    /// Instantiates a new game object with an attached Cavalry script.
+    /// Returns the Cavalry object in that script.
+    /// </summary>
     public Troop GenerateCavalry()
     {
         cavalryCount++;
-        GameObject.Instantiate(troopPrefab);
-        Troop troop = troopPrefab.AddComponent<Troop>();
+        Troop troop = GameObject.Instantiate(emptyUnitPrefab).AddComponent<Troop>();
         troop.unitName = $"{countToOrdinal(cavalryCount)} Cavalry";
         troop.InitializeTroop(TroopClassifications.CAVALRY);
         return troop;
@@ -50,7 +59,7 @@ public class UnitFactory: MonoBehaviour
     /// Creates an ordinal number from an integer.
     /// Used for naming units.
     /// </summary>
-    private string countToOrdinal(int count) {
+    public static string countToOrdinal(int count) {
         string stringCount = count.ToString();
         char lastLetter = stringCount[stringCount.Length - 1];
 

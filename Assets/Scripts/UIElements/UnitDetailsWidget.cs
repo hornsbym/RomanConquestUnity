@@ -1,4 +1,5 @@
-﻿using UnityEngine.UI;
+﻿using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
 
 public class UnitDetailsWidget : MonoBehaviour
@@ -14,9 +15,12 @@ public class UnitDetailsWidget : MonoBehaviour
     public Text rangedLabel;
     public Text movementLabel;
 
+    public Button combineButton;
+
     void Start()
     {  
         FillInLabels();
+        CreateUnitButtonOptions();
     }
 
     private void FillInLabels() 
@@ -30,5 +34,15 @@ public class UnitDetailsWidget : MonoBehaviour
         rangedLabel.text = unit.ranged.ToString();
         defenseLabel.text = unit.defense.ToString();
         movementLabel.text = unit.movement.ToString();
+    }
+
+    /// <summary>
+    /// Adds functionality to the "Combine" button.
+    /// </summary>
+    public void CreateUnitButtonOptions()
+    {
+        combineButton.onClick.AddListener(() => {
+            // TODO: Add logic for combining troops here
+        });
     }
 }

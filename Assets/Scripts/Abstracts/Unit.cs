@@ -1,11 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine.EventSystems;
 using UnityEngine;
 
-abstract public class Unit : MonoBehaviour
+public abstract class Unit : MonoBehaviour, IUnit
 {
-    public string unitName {get; set;}
+    public string unitName { get; set; }
     public int health { get; set; }
     public int melee { get; set; }
     public int ranged { get; set; }
@@ -16,10 +13,8 @@ abstract public class Unit : MonoBehaviour
     public int xpToNextLevel { get; set; }
     public int level { get; set; }
 
-    /// <summary>
-    /// Subtracts the damage from the unit's current health. 
-    /// </summary>
-    public virtual void TakeDamage(int damage){
+    public virtual void TakeDamage(int damage) 
+    {
         health -= damage;
     }
 

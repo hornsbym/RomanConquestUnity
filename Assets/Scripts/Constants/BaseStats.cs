@@ -1,4 +1,5 @@
-public static class BaseStats {
+public static class BaseStats 
+{
     public static int TROOP_HEALTH = 80;
 
     public static int INFANTRY_MELEE = 8;
