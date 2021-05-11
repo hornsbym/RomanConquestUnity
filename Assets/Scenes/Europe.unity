@@ -352,7 +352,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c4abc74cd0ee0c499c77920aa13da9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  state: 0
 --- !u!4 &880272152
 Transform:
   m_ObjectHideFlags: 0
@@ -540,6 +539,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   emptyUnitPrefab: {fileID: 7931128088788007203, guid: 0f8c47530b68a6145a18d8870d2f8167,
     type: 3}
+  currentCity: {fileID: 0}
 --- !u!4 &1335302725
 Transform:
   m_ObjectHideFlags: 0
@@ -771,6 +771,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76542235ed74f1843bb960a0cc5ddc17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  defaultUIPrefab: {fileID: 8253631161206608352, guid: c0076f2326ac5ab40b4f4b81d67b34ea,
+    type: 3}
   selectedCityUIPrefab: {fileID: 8539443028350076727, guid: 21db9f8325110b74b88875a7f1bb58c5,
     type: 3}
   selectedRoadUIPrefab: {fileID: 6793046151158420327, guid: 469b4830b0780a54ea3c0c6ab89d2fa5,
