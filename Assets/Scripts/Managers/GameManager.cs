@@ -3,25 +3,29 @@
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance {get; set;}
-    public Place placeSelection {get; set;}
+
     public Unit unitSelection {get; set;}
+    public City currentCity {get; set;}
+
+    void Awake() {
+        EventManager.OnCitySelected += SelectCity;
+        EventManager.OnRoadSelected += SelectRoad;
+        EventManager.OnDefaultSelected += DeselectAll;
+    }
 
     // Start is called before the first frame update
     void Start()
     {
         instance = this;
-        placeSelection = null;
         unitSelection = null;
     }
+
 
     /// <summary>
     /// Select a Unit.
     /// </summary>
     public void SelectUnit(Unit unit) {
-        print($"Selected unit: {unit}");
         unitSelection = unit;
-        UIManager.instance.DestroyFriendlyUnitDetailsWidget();
-        UIManager.instance.CreateFriendlyUnitDetailsWidget();
     }
 
     /// <summary>
@@ -30,9 +34,8 @@ public class GameManager : MonoBehaviour
     public void SelectCity(City city) 
     {
         DeselectAll();
-        placeSelection = city;
-        UIManager.instance.CreatePurchaseButtonsSection(city);
-        UIManager.instance.CreateFriendlyUnitsSection(city);
+        this.currentCity = city;
+        print($"{city.placeName} selected");
     }
 
     /// <summary>
@@ -41,7 +44,7 @@ public class GameManager : MonoBehaviour
     public void SelectRoad(Road road) 
     {
         DeselectAll();
-        placeSelection = road;
+        print($"{road.placeName} selected");
     }
 
     /// <summary>
@@ -49,10 +52,6 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void DeselectAll()
     {
-        placeSelection = null;
         unitSelection = null;
-        UIManager.instance.DestroyPurchaseButtons();
-        UIManager.instance.DestroyFriendlyUnitsPanel();
-        UIManager.instance.DestroyFriendlyUnitDetailsWidget();
     }
 }

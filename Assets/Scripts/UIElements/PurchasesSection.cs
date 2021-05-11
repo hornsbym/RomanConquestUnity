@@ -1,59 +1,45 @@
 ﻿using UnityEngine.UI;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class PurchasesSection : MonoBehaviour
 {
-    private City selectedCity;
-    public GameObject buttonAnchor;
-    public Button purchaseButtonPrefab;
+    public GameObject purchaseButtonRowContent;
+    public GameObject troopPurchaseRowPrefab;
 
-    void Start()
-    {
-        selectedCity = (City) GameManager.instance.placeSelection;
-        CreateButtons();
+    private List<GameObject> existingPurchaseRows;
+
+    void Awake() {
+        EventManager.OnCitySelected += CreatePurchaseRows;
+        existingPurchaseRows = new List<GameObject>();
     }
 
     /// <summary>
-    /// Creaets the buttons and adds them to the UI widget.
+    /// Creates the buttons and adds them to the UI widget.
     /// </summary>
-    private void CreateButtons() 
+    private void CreatePurchaseRows(City selectedCity) 
     {
-        Vector3 buttonAnchorPos = buttonAnchor.transform.position;
+        DeletePurchaseRows();
 
         for (int i = 0; i < selectedCity.unitsForSale.Length; i++)
         {
-            Vector3 newButtonPos = buttonAnchorPos;
-            newButtonPos.y -= i * 35;
+            GameObject row = Instantiate(troopPurchaseRowPrefab, purchaseButtonRowContent.GetComponent<RectTransform>(), false);
+            row.transform.SetParent(purchaseButtonRowContent.GetComponent<RectTransform>());
 
-            Button newButton = Instantiate(purchaseButtonPrefab, newButtonPos, Quaternion.identity);
-            newButton.transform.SetParent(transform);
-            AddPurchaseTroopFunctionAndText(ref newButton, selectedCity.unitsForSale[i]);
+            row.GetComponent<TroopPurchaseRow>().Initialize(selectedCity.unitsForSale[i]);
+            existingPurchaseRows.Add(row);
         }
     }
 
     /// <summary>
-    /// Adds on-click functionality to the button.
-    /// Also adds text to the button.
+    /// Clears out the purchase panel.
     /// </summary>
-    private void AddPurchaseTroopFunctionAndText(ref Button button, TroopClassifications classification)
+    private void DeletePurchaseRows()
     {
-        City selectedCity = (City) GameManager.instance.placeSelection;
-
-        switch (classification)
-        {
-            case TroopClassifications.INFANTRY:
-                button.onClick.AddListener(() => selectedCity.AddUnit(UnitFactory.instance.GenerateInfantry()));
-                button.GetComponentInChildren<Text>().text = "Infantry";
-                break;
-            case TroopClassifications.RANGED:
-                button.onClick.AddListener(() => selectedCity.AddUnit(UnitFactory.instance.GenerateRanged()));
-                button.GetComponentInChildren<Text>().text = "Ranged";
-                break;
-            case TroopClassifications.CAVALRY:
-                button.onClick.AddListener(() => selectedCity.AddUnit(UnitFactory.instance.GenerateCavalry()));
-                button.GetComponentInChildren<Text>().text = "Cavalry";
-                break;
+        foreach (GameObject row in existingPurchaseRows) {
+            Destroy(row);
         }
-    }
 
+        existingPurchaseRows.Clear();
+    }
 }

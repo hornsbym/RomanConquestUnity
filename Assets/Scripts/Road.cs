@@ -19,6 +19,11 @@ public class Road : Place
     // they're destined for.
     private Dictionary<City, List<TravellingUnit>> unitsEnRouteTo;
 
+    void Awake() 
+    {
+        EventManager.OnTurnEnd += ProgressAllUnits;
+    }
+
     /// <summary>
     /// A class for tracking a Unit's travelling progress.
     /// Basically pairs a Unit with an integer.
@@ -90,6 +95,10 @@ public class Road : Place
     /// </summary>
     public void PutUnitOnRoad(Unit unit, City currentCity) 
     {
+        print(unit.unitName + " put on road " + city1.placeName + " -> " + city2.placeName);
+        print("Units en route to " + city1.placeName + ": " + string.Join(", ", unitsEnRouteTo[city1]));
+        print("Units en route to " + city2.placeName + ": " + string.Join(", ", unitsEnRouteTo[city2]));
+
         // If the unit is currently in city1, send the unit to city2
         if (currentCity == city1) {
             unitsEnRouteTo[city2].Add(new TravellingUnit(unit, defaultTurnCount));
@@ -142,5 +151,16 @@ public class Road : Place
         // Replace the units en route list with the units that are still 
         // en route.
         unitsEnRouteTo[city2] = toCity2BackupUnitList;
+    }
+
+    /// <summary>
+    /// Returns the units headed towards a particular city.
+    /// </summary>
+    public List<Unit> GetUnitsEnRouteTo(City destination) {
+        List<Unit> units = new List<Unit>();
+        foreach (TravellingUnit tUnit in unitsEnRouteTo[destination]) {
+            units.Add(tUnit.unit);
+        }
+        return units;
     }
 }

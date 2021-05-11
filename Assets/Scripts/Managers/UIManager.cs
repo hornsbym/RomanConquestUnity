@@ -5,141 +5,83 @@ using UnityEngine;
 public class UIManager : MonoBehaviour 
 {
     public static UIManager instance {get; set;}
-    
-    // Shows name of city or road
-    public GameObject selectedCityLabel;
 
-    // Maintains a reference between the
-    // friendly unit UI elements and their Unit objects
-    private Dictionary<GameObject, Unit> friendlyUnitInstances;
+    // Contains the various UIs that can be created.
+    // Each will contain their own draw logic.
+    public Canvas defaultUIPrefab;
+    public Canvas selectedCityUIPrefab;
+    public Canvas selectedRoadUIPrefab;
+    public Canvas combineUnitsUIPrefab;
+    public Canvas moveUnitsUIPrefab;
 
-    // Fields for purchasing troops
-    private GameObject purchasePanelInstance;
-    public GameObject purchasePanelPrefab;
-    public GameObject purchasePanelAnchor;
+    // Track the instantiated UIs here
+    private Canvas defaultUI;
+    private Canvas selectedCityUI;
+    private Canvas selectedRoadUI;
+    private Canvas combineUnitsUI;
+    private Canvas moveUnitsUI;
 
-    // Fields for displaying existing units
-    private GameObject friendlyUnitsPanelInstance;
-    public GameObject friendlyUnitsPanelPrefab;
+    void Awake()
+    {
+        EventManager.OnDefaultSelected += ActivateDefaultUI;
+        EventManager.OnCitySelected += ActivateSelectedCityUI;
+        EventManager.OnRoadSelected += ActivateSelectedRoadUI;
+        EventManager.OnTurnEnd += ActivateDefaultUI;
+        EventManager.OnCombineSelected += ActivateCombineUnitsUI;
+        EventManager.OnMoveUnitsSelected += ActivateMoveUnitsUI;
+    }
 
-    // For displaying a single friendly unit
-    public GameObject friendlyUnitPanelAnchor;
-
-    // For showing unit details (both friendly and not)
-    public GameObject unitDetailsWidgetPrefab;
-
-    // For displaying friendly unit details
-    public GameObject friendlyUnitDetailsWidgetAnchor;
-    private GameObject friendlyUnitDetailsInstance;
 
     void Start()
     {
         instance = this;
-        friendlyUnitInstances = new Dictionary<GameObject, Unit>();
+
+        // Instantiate all UI screens, but deactivate them. 
+        defaultUI = Instantiate(defaultUIPrefab, Vector3.zero, Quaternion.identity);
+        selectedCityUI = Instantiate(selectedCityUIPrefab, Vector3.zero, Quaternion.identity);
+        selectedRoadUI = Instantiate(selectedRoadUIPrefab, Vector3.zero, Quaternion.identity);
+        combineUnitsUI = Instantiate(combineUnitsUIPrefab, Vector3.zero, Quaternion.identity);
+        moveUnitsUI = Instantiate(moveUnitsUIPrefab, Vector3.zero, Quaternion.identity);
+
+        ActivateDefaultUI();
     }
 
-    void Update() 
+    void ActivateDefaultUI()
     {
-        DisplaySelectionInformation();
+        DeactivateAllUIs();
+        defaultUI.gameObject.SetActive(true);
     }
 
-    /// <summary>
-    /// Changes the UI to fit the needs of the selected city.
-    /// If there isn't a selected city, displays nothing at the UI level.
-    /// </summary>
-    public void DisplaySelectionInformation() 
+    void ActivateSelectedCityUI(City city) 
     {
-        Place selection = GameManager.instance.placeSelection;
-        
-        if (selection != null ) {
-            if (selection is Road) {
-                BuildRoadUI((Road) selection);
-            } else if (selection is City) {
-                BuildCityUI((City) selection);
-            }
-        } else {
-            selectedCityLabel.SetActive(false);
-        }
+        DeactivateAllUIs();
+        selectedCityUI.gameObject.SetActive(true);
     }
 
-    /// <summary>
-    /// Adds road-specific components to the UI.
-    /// </summary>
-    private void BuildRoadUI(Road selection)
+    void ActivateSelectedRoadUI(Road road)
     {
-        selectedCityLabel.GetComponent<Text>().text = selection.placeName;
-        selectedCityLabel.SetActive(true);
+        DeactivateAllUIs();
+        selectedRoadUI.gameObject.SetActive(true);
     }
 
-    /// <summary>
-    /// Adds city-specific components to the UI.
-    /// </summary>
-    private void BuildCityUI(City selection)
+    void ActivateCombineUnitsUI(City city)
     {
-        selectedCityLabel.GetComponent<Text>().text = selection.placeName;
-        selectedCityLabel.SetActive(true);
+        DeactivateAllUIs();
+        combineUnitsUI.gameObject.SetActive(true);
     }
 
-    /// <summary>
-    /// Creates and tracks the friendly troop cards that need to be
-    /// displayed whenever a city is selected.
-    /// Should be called by the MapManager whenever a new City is selected.
-    /// </summary>
-    public void CreateFriendlyUnitsSection(City selectedCity) 
+    void ActivateMoveUnitsUI(City city)
     {
-        friendlyUnitsPanelInstance = Instantiate(friendlyUnitsPanelPrefab, 
-            friendlyUnitPanelAnchor.transform.position, Quaternion.identity);
-        friendlyUnitsPanelInstance.transform.SetParent(GameObject.FindGameObjectWithTag("Canvas").transform);
+        DeactivateAllUIs();
+        moveUnitsUI.gameObject.SetActive(true);
     }
 
-    /// <summary>
-    /// Creates a friendly unit detials widget.
-    /// </summary>
-    public void CreateFriendlyUnitDetailsWidget()
+    void DeactivateAllUIs() 
     {
-        friendlyUnitDetailsInstance = Instantiate(unitDetailsWidgetPrefab, 
-            friendlyUnitDetailsWidgetAnchor.transform.position, Quaternion.identity);
-        friendlyUnitDetailsInstance.transform.SetParent(GameObject.FindGameObjectWithTag("Canvas").transform);
-    }
-
-    /// <summary>
-    /// Destroys the friendly unity details section and 
-    /// removes the reference to it.
-    /// </summary>
-    public void DestroyFriendlyUnitDetailsWidget() 
-    {
-        Destroy(friendlyUnitDetailsInstance);
-        friendlyUnitDetailsInstance = null;
-    }
-
-    /// <summary>
-    /// Removes the friendly units panel from the UI.
-    /// </summary>
-    public void DestroyFriendlyUnitsPanel() 
-    {
-        Destroy(friendlyUnitsPanelInstance);
-        friendlyUnitsPanelInstance = null;
-    }
-
-    /// <summary>
-    /// Creates the purchase buttons per selected city (based on which troop
-    /// types that city can provide).
-    /// Adds onclick functionality to the purchase buttons.
-    /// </summary>
-    public void CreatePurchaseButtonsSection(City selectedCity)
-    {
-        purchasePanelInstance = Instantiate(purchasePanelPrefab,
-            purchasePanelAnchor.transform.position, Quaternion.identity);
-        purchasePanelInstance.transform.SetParent(GameObject.FindGameObjectWithTag("Canvas").transform);
-    }
-
-    /// <summary>
-    /// Removes all purchase button listeners and destroys the button
-    /// game objects.
-    /// </summary>
-    public void DestroyPurchaseButtons()
-    {
-        Destroy(purchasePanelInstance);
-        purchasePanelInstance = null;
+        defaultUI.gameObject.SetActive(false);
+        selectedCityUI.gameObject.SetActive(false);
+        selectedRoadUI.gameObject.SetActive(false);
+        combineUnitsUI.gameObject.SetActive(false);
+        moveUnitsUI.gameObject.SetActive(false);
     }
 }

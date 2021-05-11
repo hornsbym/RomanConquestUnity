@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4985136856516502192}
   - component: {fileID: 207316924010146496}
   m_Layer: 5
-  m_Name: FriendlyUnitLabel
+  m_Name: FriendlyUnitTile
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -56,7 +56,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7734567833439503810}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 821a1bfcaa5542740b769033a4280389, type: 3}
+  m_Script: {fileID: 11500000, guid: 002d5ea74c73798479e36dcee647d7e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &4985136856516502192

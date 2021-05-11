@@ -51,8 +51,32 @@ public class City : Place
         foreach(Neighbor neighbor in neighbors) {
             // If we get here, the road doesn't exist so we should make one and 
             // add it to the MapManager's roads list.
-            MapManager.instance.TryToCreateRoad(this, neighbor.city, neighbor.travelLength);
+            Road newRoad = MapManager.instance.TryToCreateRoad(this, neighbor.city, neighbor.travelLength);
         }
+    }
+
+    /// <summary>
+    /// Sends a group of units on the road to a neighboring city.
+    /// </summary>
+    public void SendFriendlyUnitsToNeighbor(List<Unit> units, City city) {
+        // print("Sending units to " + city.placeName);
+        // print("Roads dictionary keys: " + string.Join(", " , roadsToNeighbors.Keys));
+
+        Road roadToNeighbor = MapManager.instance.GetRoad(this, city);
+
+        foreach (Unit unit in units) {
+            roadToNeighbor.PutUnitOnRoad(unit, this);
+        }
+
+        /// Removes units from the city if they're being put on the road
+        List<Unit> revisedUnitsList = new List<Unit>(this.friendlyUnits);
+        foreach (Unit unit in this.friendlyUnits) {
+            if (units.Contains(unit)) {
+                revisedUnitsList.Remove(unit);
+            }
+        }
+
+        this.friendlyUnits = revisedUnitsList;
     }
 
     /// <summary>
@@ -63,6 +87,19 @@ public class City : Place
         neighbors.Add(new Neighbor(neighboringCity, distance));
     }
 
+    /// <summary>
+    /// Returns a list of the cities that are connected to this city.
+    /// </summary>
+    public List<City> GetNeighbors()
+    {
+        List<City> neighboringCities = new List<City>();
+        foreach (Neighbor neighbor in this.neighbors) {
+            neighboringCities.Add(neighbor.city);
+        }
+
+        return neighboringCities;
+    }
+
 
     /// <summary>
     /// Adds the provided unit to the city's list of units.
@@ -70,7 +107,6 @@ public class City : Place
     public void AddUnit(Unit unit) 
     {   
         friendlyUnits.Add(unit);
-        UIManager.instance.DestroyFriendlyUnitsPanel();
-        UIManager.instance.CreateFriendlyUnitsSection(this);
+        EventManager.instance.fireUnitAddedEvent(this);
     }
 }

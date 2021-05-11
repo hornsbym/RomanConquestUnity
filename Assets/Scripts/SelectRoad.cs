@@ -5,6 +5,6 @@ public class SelectRoad : MonoBehaviour
 {
     void OnMouseDown()
     {
-        GameManager.instance.SelectRoad(gameObject.GetComponent<Road>());
+        EventManager.instance.fireSelectRoadEvent(gameObject.GetComponent<Road>());
     }
 }

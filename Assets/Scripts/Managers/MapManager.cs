@@ -12,14 +12,14 @@ public class MapManager : MonoBehaviour
 
     // TODO: Do I need to keep a reference to these?
     public List<City> cities;
-    public List<Road> roads;
+    public Dictionary<City, Dictionary<City, Road>> roads;
 
     // Start is called before the first frame update
     void Start()
     {   
         instance = this;
         cities = new List<City>();
-        roads = new List<Road>();
+        roads = new Dictionary<City, Dictionary<City, Road>>();
         InitializeCities();
     }
 
@@ -29,7 +29,7 @@ public class MapManager : MonoBehaviour
         // Handles city deselection
         if (Input.GetMouseButtonDown(1))
         {
-            GameManager.instance.DeselectAll();
+            EventManager.instance.fireDefaultSelectedEvent();
         }
     }
 
@@ -87,9 +87,8 @@ public class MapManager : MonoBehaviour
     /// <summary>
     /// Instantiates a road marker between two cities and returns a reference to it.
     /// </summary>
-    public GameObject SpawnRoadMarker(City city1, City city2, int roadLength)
+    public Road SpawnRoadMarker(City city1, City city2, int roadLength)
     {   
-
         // Instantiate object
         GameObject marker = (GameObject) Instantiate(roadMarkerPrefab);
         Road road = marker.AddComponent<Road>();
@@ -97,8 +96,35 @@ public class MapManager : MonoBehaviour
         road.city2 = city2;
         road.defaultTurnCount = roadLength;
         road.InitializeRoad();
-        this.roads.Add(road);
-        return marker;
+
+        /// If the roads dictionary already contains a dictionary of roads for a city,
+        /// add the road to that dictionary. 
+        if (this.roads.ContainsKey(city1)) {
+            this.roads[city1].Add(city2, road);
+        } 
+        /// If not, create a new dictionary and add to it.
+        else {
+            this.roads[city1] = new Dictionary<City, Road>();
+            this.roads[city1].Add(city2, road);
+        }
+
+        /// Do the same the second city to the first
+        if (this.roads.ContainsKey(city2)) {
+            this.roads[city2].Add(city1, road);
+        } else {
+            this.roads[city2] = new Dictionary<City, Road>();
+            this.roads[city2].Add(city1, road);
+        }
+
+        return road;
+    }
+
+    /// <summary>
+    /// Finds a road from the roads dictionary.
+    /// </summary>
+    public Road GetRoad(City startingCity, City destination) 
+    {
+        return this.roads[startingCity][destination];
     }
 
     // TODO: Make the road creation process more efficient.
@@ -108,12 +134,14 @@ public class MapManager : MonoBehaviour
     /// If no road exists between the two provided cities, create one.
     /// If a road alredy exists, do nothing.
     /// </summary>
-    public void TryToCreateRoad(City city1, City city2, int length) {
+    public Road TryToCreateRoad(City city1, City city2, int length) {
         if (!MapManager.instance.DoesRoadExist(city1, city2))
         {
             // If we get here, the road doesn't exist so we should make one and 
             // add it to the MapManager's roads list.
-            SpawnRoadMarker(city1, city2, length);
+            return SpawnRoadMarker(city1, city2, length);
+        } else {
+            return null;
         }
     }
 
@@ -122,18 +150,19 @@ public class MapManager : MonoBehaviour
     /// </summary>
     private bool DoesRoadExist(City city1, City city2)
     {
-        foreach (Road road in roads)
-        {
-            if (road.city1 == city1 && road.city2 == city2)
-            {
-                return true;
-            }
-            else if (road.city2 == city1 && road.city1 == city2)
-            {
+        /// If there's no nested dictionary for the first city, return false
+        if (!roads.ContainsKey(city1)) {
+            return false;
+        } else {
+            /// If there is a nested dictionary but it doesn't contain the second city, return false.
+            if (!roads[city1].ContainsKey(city2)) {
+                return false;
+            } 
+            
+            /// If the dictionary exists for the first city and it contains a road to the second city, return true.
+            else {
                 return true;
             }
         }
-
-        return false;
     }
 }
