@@ -41,14 +41,11 @@ public class MapManager : MonoBehaviour
     private void InitializeCities()
     {
         /// Create the cities and city map markers here.
-        City rome = SpawnCityMarker("Rome", new Vector3(.91f, -4.15f, 0f), 
-            new TroopClassifications[] { TroopClassifications.INFANTRY, TroopClassifications.RANGED })
+        City rome = SpawnCityMarker("Rome", new Vector3(.91f, -4.15f, 0f), Allegiance.ROMAN, 25, new TroopClassifications[] { TroopClassifications.INFANTRY })
             .GetComponent<City>();
-        City florence = SpawnCityMarker("Florence", new Vector3(.55f, -3.65f, 0f), 
-            new TroopClassifications[] { TroopClassifications.INFANTRY, TroopClassifications.CAVALRY })
+        City florence = SpawnCityMarker("Florence", new Vector3(.55f, -3.65f, 0f), Allegiance.INDEPENDENT, 10)
             .GetComponent<City>();
-        City naples = SpawnCityMarker("Naples", new Vector3(1.39f, -4.45f, 0f), 
-            new TroopClassifications[] { TroopClassifications.RANGED })
+        City naples = SpawnCityMarker("Naples", new Vector3(1.39f, -4.45f, 0f), Allegiance.GALLIC, 15)
             .GetComponent<City>();
         
         /// Connect the cities by declaring neighbors.
@@ -70,12 +67,19 @@ public class MapManager : MonoBehaviour
     /// Instantiates a city marker and returns a reference to it.
     /// The "real" data is maintained in the marker's "City" component, which is also created here.
     /// </summary>
-    public GameObject SpawnCityMarker(string cityName, Vector3 cityPosition, TroopClassifications[] troopsForSale)
+    public GameObject SpawnCityMarker(string cityName, Vector3 cityPosition, Allegiance allegiance, int wealth, TroopClassifications[] troopsForSale = null)
     {
         GameObject marker = (GameObject) Instantiate(cityMarkerPrefab, cityPosition, Quaternion.identity);
         City city = marker.AddComponent<City>();
         city.placeName = cityName;
-        city.unitsForSale = troopsForSale;
+        city.allegiance = allegiance;
+        city.wealth = wealth;
+
+        if (troopsForSale != null) {
+            city.unitsForSale = troopsForSale;
+        } else {
+            city.unitsForSale = new TroopClassifications[3];
+        }
 
         /// Keep track of the city in an array.
         /// Why? For connecting the cities with roads.

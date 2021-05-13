@@ -21,38 +21,55 @@ public class UnitFactory: MonoBehaviour
     /// Instantiates a new game object with an attached Troop script.
     /// Returns the Troop object in that script.
     /// </summary>
-    public Troop GenerateInfantry() {
-        infantryCount++;
-        Troop troop = GameObject.Instantiate(emptyUnitPrefab).AddComponent<Troop>();
-        troop.unitName = $"{countToOrdinal(infantryCount)} Infantry";
-        troop.InitializeTroop(TroopClassifications.INFANTRY);
-        return troop;
+    public List<Troop> GenerateInfantry(int count) {
+        List<Troop> newInfantry = new List<Troop> ();
+        for (int i = 0; i < count; i++) {
+            infantryCount++;
+            Troop troop = GameObject.Instantiate(emptyUnitPrefab).AddComponent<Troop>();
+            troop.unitName = $"{countToOrdinal(infantryCount)} Infantry";
+            troop.InitializeTroop(TroopClassifications.INFANTRY);
+            newInfantry.Add(troop);
+        }
+        
+        return newInfantry;
     }
 
     /// <summary>
     /// Instantiates a new game object with an attached Ranged script.
     /// Returns the Ranged object in that script.
     /// </summary>
-    public Troop GenerateRanged()
+    public List<Troop> GenerateRanged(int count)
     {
-        rangedCount++;
-        Troop troop = GameObject.Instantiate(emptyUnitPrefab).AddComponent<Troop>();
-        troop.unitName = $"{countToOrdinal(rangedCount)} Ranged";
-        troop.InitializeTroop(TroopClassifications.RANGED);
-        return troop;
+        List<Troop> newRanged = new List<Troop>();
+        for (int i = 0; i < count; i++)
+        {
+            rangedCount++;
+            Troop troop = GameObject.Instantiate(emptyUnitPrefab).AddComponent<Troop>();
+            troop.unitName = $"{countToOrdinal(rangedCount)} Ranged";
+            troop.InitializeTroop(TroopClassifications.RANGED);
+            newRanged.Add(troop);
+        }
+
+        return newRanged;
     }
 
     /// <summary>
     /// Instantiates a new game object with an attached Cavalry script.
     /// Returns the Cavalry object in that script.
     /// </summary>
-    public Troop GenerateCavalry()
+    public List<Troop> GenerateCavalry(int count)
     {
-        cavalryCount++;
-        Troop troop = GameObject.Instantiate(emptyUnitPrefab).AddComponent<Troop>();
-        troop.unitName = $"{countToOrdinal(cavalryCount)} Cavalry";
-        troop.InitializeTroop(TroopClassifications.CAVALRY);
-        return troop;
+        List<Troop> newCavalry = new List<Troop>();
+        for (int i = 0; i < count; i++)
+        {
+            cavalryCount++;
+            Troop troop = GameObject.Instantiate(emptyUnitPrefab).AddComponent<Troop>();
+            troop.unitName = $"{countToOrdinal(cavalryCount)} Cavalry";
+            troop.InitializeTroop(TroopClassifications.CAVALRY);
+            newCavalry.Add(troop);
+        }
+
+        return newCavalry;
     }
 
     /// <summary>

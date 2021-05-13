@@ -15,7 +15,7 @@ public class CombineUnitsPopupPanel : MonoBehaviour
     
     void Awake() 
     {
-        EventManager.OnUnitAdded += Initialize;
+        EventManager.OnUnitsChanged += Initialize;
         EventManager.OnCitySelected += Initialize;
 
     }
@@ -23,7 +23,7 @@ public class CombineUnitsPopupPanel : MonoBehaviour
     private void Initialize(City selectedCity)
     {
         selectedUnits = new List<Unit>();
-        availableUnits = new List<Unit>(selectedCity.friendlyUnits);
+        availableUnits = new List<Unit>(selectedCity.occupyingUnits);
 
         InitializeButtons();
         InitializeAvailableTroopsScrollview();

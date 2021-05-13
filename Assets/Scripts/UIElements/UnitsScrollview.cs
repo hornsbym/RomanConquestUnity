@@ -70,6 +70,6 @@ public class UnitsScrollview : MonoBehaviour
 
     public List<Unit> GetUnits() 
     {
-        return this.units;
+        return new List<Unit>(this.units);
     }
 }

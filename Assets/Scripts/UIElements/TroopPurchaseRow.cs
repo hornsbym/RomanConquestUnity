@@ -36,9 +36,7 @@ public class TroopPurchaseRow : MonoBehaviour
             case TroopClassifications.INFANTRY:
                 purchaseButton.onClick.AddListener(() => {
                     int numTroops = int.Parse(quantityInput.GetComponentInChildren<Text>().text);
-                    for(int i = 0; i < numTroops; i++) {
-                        GameManager.instance.currentCity.AddUnit(UnitFactory.instance.GenerateInfantry());
-                    }
+                    GameManager.instance.currentCity.AddOccupyingUnits(UnitFactory.instance.GenerateInfantry(numTroops));
                     quantityInput.text = "1";
                 });
                 purchaseButton.GetComponentInChildren<Text>().text = "Infantry";
@@ -46,10 +44,7 @@ public class TroopPurchaseRow : MonoBehaviour
             case TroopClassifications.RANGED:
                 purchaseButton.onClick.AddListener(() => {
                     int numTroops = int.Parse(quantityInput.GetComponentInChildren<Text>().text);
-                    for (int i = 0; i < numTroops; i++)
-                    {
-                        GameManager.instance.currentCity.AddUnit(UnitFactory.instance.GenerateRanged());
-                    }
+                    GameManager.instance.currentCity.AddOccupyingUnits(UnitFactory.instance.GenerateRanged(numTroops));
                     quantityInput.text = "1";
                 });
                 purchaseButton.GetComponentInChildren<Text>().text = "Ranged";
@@ -57,10 +52,7 @@ public class TroopPurchaseRow : MonoBehaviour
             case TroopClassifications.CAVALRY:
                 purchaseButton.onClick.AddListener(() => {
                     int numTroops = int.Parse(quantityInput.GetComponentInChildren<Text>().text);
-                    for (int i = 0; i < numTroops; i++)
-                    {
-                        GameManager.instance.currentCity.AddUnit(UnitFactory.instance.GenerateCavalry());
-                    }
+                    GameManager.instance.currentCity.AddOccupyingUnits(UnitFactory.instance.GenerateCavalry(numTroops));
                     quantityInput.text = "1";
                 });
                 purchaseButton.GetComponentInChildren<Text>().text = "Cavalry";

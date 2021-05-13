@@ -3,6 +3,7 @@ using UnityEngine;
 public abstract class Unit : MonoBehaviour, IUnit
 {
     public string unitName { get; set; }
+    public Allegiance allegiance { get; set; }
     public int health { get; set; }
     public int melee { get; set; }
     public int ranged { get; set; }

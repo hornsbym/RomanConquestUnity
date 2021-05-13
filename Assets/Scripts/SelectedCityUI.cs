@@ -15,7 +15,7 @@ public class SelectedCityUI : MonoBehaviour
         friendlyUnitDetails.SetActive(false);
 
         // Subscribe methods to events
-        EventManager.OnUnitAdded += InitializeFriendlyUnitList;
+        EventManager.OnUnitsChanged += InitializeFriendlyUnitList;
         EventManager.OnCitySelected += PopulateComponents;
     }
 
@@ -43,7 +43,7 @@ public class SelectedCityUI : MonoBehaviour
 
         /// Add the units and provide logic for what should be done whenever the 
         /// individual unit is clicked.
-        scrollview.SetContent(city.friendlyUnits, (Unit u) =>
+        scrollview.SetContent(city.occupyingUnits, (Unit u) =>
         {
             GameManager.instance.SelectUnit(u);
         });

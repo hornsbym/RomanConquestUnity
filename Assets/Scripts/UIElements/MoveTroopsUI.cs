@@ -18,7 +18,7 @@ public class MoveTroopsUI : MonoBehaviour
     {
         scrollviewCityPairs = new List<ScrollviewCityPair>();
         EventManager.OnCitySelected += AddNeighboringCityScrollviews;
-        EventManager.OnUnitAdded += AddNeighboringCityScrollviews;
+        EventManager.OnUnitsChanged += AddNeighboringCityScrollviews;
         EventManager.OnMoveUnitsSelected += setSelectedCity;
 
         confirmButton.onClick.AddListener(ConfirmSelection);
@@ -63,7 +63,7 @@ public class MoveTroopsUI : MonoBehaviour
         selectedCitySv.transform.SetParent(unitsScrollviewLayout.transform);
 
         // Create a new list here to prevent overriding values
-        selectedCitySv.SetContent(new List<Unit>(selectedCity.friendlyUnits), CycleUnit);
+        selectedCitySv.SetContent(new List<Unit>(selectedCity.occupyingUnits), CycleUnit);
 
         scrollviewCityPairs.Add(new ScrollviewCityPair(selectedCity, selectedCitySv));
 

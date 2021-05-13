@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 /// <summary>
 /// Contains information about a city and its contents.
@@ -8,21 +9,35 @@
 public class City : Place
 {
     // Tracks adjacent cities
-    private List<Neighbor> neighbors {get; set;}
+    private List<Neighbor> neighbors { get; set; }
 
     // Tracks units within the city
-    private List<Unit> hostileUnits;
-    public List<Unit> friendlyUnits;
+    public List<Unit> occupyingUnits { get; set; }
 
     // Tracks which units the city can sell
     public TroopClassifications[] unitsForSale;
 
+    // Keeps track of who the city is allied with
+    public Allegiance allegiance { get; set; }
+
+    // This is the maximum amount of money a city will produce per turn
+    public int wealth { get; set; }
+
+    // This is the percentage of wealth the leader will take from this city per turn.
+    // Taking a larger portion increases the chance that a city will enter a state of revolt.
+    public float taxRate { get; set; }
+
+    // This is the chance per turn that a city will revolt per turn.
+    // This should always be between 0 and 1.
+    public float publicUnrest { get; set; }
+
     /// Called whenever the component is added to an object.
     void Awake() {
         neighbors = new List<Neighbor>();
-        hostileUnits = new List<Unit>();
-        friendlyUnits = new List<Unit>();
+        occupyingUnits = new List<Unit>();
 
+        publicUnrest = 0.0f;
+        taxRate = 1.0f;
     }
 
     /// <summary>
@@ -39,6 +54,37 @@ public class City : Place
             this.city = city;
             this.travelLength = travelLength;
         }
+    }
+
+    /// <summary>
+    /// Adds the taxes owed by the city to the leader's gold reserve.
+    /// Before that, considers if the city should revolt.
+    /// After the taxes are collected, adjusts the public unrest.
+    /// </summary>
+    public void CollectTaxes() 
+    {
+        /// Check if the city should revolt
+        float chance = UnityEngine.Random.Range(0f, 1f);
+        if (publicUnrest > chance) {
+            Revolt();
+        } else {
+            int tax = (int) (wealth * taxRate);
+            GameManager.instance.leaderToCivMapping[allegiance].gold += tax;
+        }
+
+        // TODO: Calculate public unrest
+
+    }
+
+    /// <summary>
+    /// Performs revolt logic, primarily setting the allegiance to independent.
+    /// Also removes any friendly units in the city and 
+    /// will eventually spawn independently aligned units.
+    /// </summary>
+    private void Revolt() 
+    {
+        ChangeAllegiance(Allegiance.INDEPENDENT);
+        ClearOccupyingUnits();
     }
 
     /// <summary>
@@ -59,9 +105,6 @@ public class City : Place
     /// Sends a group of units on the road to a neighboring city.
     /// </summary>
     public void SendFriendlyUnitsToNeighbor(List<Unit> units, City city) {
-        // print("Sending units to " + city.placeName);
-        // print("Roads dictionary keys: " + string.Join(", " , roadsToNeighbors.Keys));
-
         Road roadToNeighbor = MapManager.instance.GetRoad(this, city);
 
         foreach (Unit unit in units) {
@@ -69,14 +112,14 @@ public class City : Place
         }
 
         /// Removes units from the city if they're being put on the road
-        List<Unit> revisedUnitsList = new List<Unit>(this.friendlyUnits);
-        foreach (Unit unit in this.friendlyUnits) {
+        List<Unit> revisedUnitsList = new List<Unit>(this.occupyingUnits);
+        foreach (Unit unit in this.occupyingUnits) {
             if (units.Contains(unit)) {
                 revisedUnitsList.Remove(unit);
             }
         }
-
-        this.friendlyUnits = revisedUnitsList;
+        
+        this.occupyingUnits = revisedUnitsList;
     }
 
     /// <summary>
@@ -100,13 +143,56 @@ public class City : Place
         return neighboringCities;
     }
 
+    /// <summary>
+    /// Changes the city's allegiance to the provided allegiance.
+    /// </summary>
+    public void ChangeAllegiance(Allegiance newAllegiance) 
+    {
+        this.allegiance = newAllegiance;
+    }
 
     /// <summary>
     /// Adds the provided unit to the city's list of units.
     /// </summary>
-    public void AddUnit(Unit unit) 
+    public void AddOccupyingUnits<T>(List<T> units) where T : Unit
     {   
-        friendlyUnits.Add(unit);
-        EventManager.instance.fireUnitAddedEvent(this);
+        occupyingUnits.AddRange(units);
+        EventManager.instance.fireUnitsChangedEvent(this);
+
+        /// Handles changing allegiances if friendly units are the only units in the city.
+        if (this.occupyingUnits.Count > 0) {
+            this.allegiance = occupyingUnits[0].allegiance;
+        }
+    }
+
+    /// <summary>
+    /// Remove the list of units from the city's friendly units.
+    /// </summary>
+    public void RemoveOccupyingUnits<T>(List<T> units) where T : Unit
+    {        
+        /// TODO: Is it necessary to destroy the game objects too?
+        List<Unit> revisedUnitsList = new List<Unit>(this.occupyingUnits);
+        foreach (Unit unit in this.occupyingUnits)
+        {
+            if (units.Contains(unit))
+            {
+                revisedUnitsList.Remove(unit);
+            }
+        }
+
+        this.occupyingUnits = revisedUnitsList;
+
+        /// Send an event informing the rest of the game that the units have changed.
+        EventManager.instance.fireUnitsChangedEvent(this);
+    }
+
+    /// <summary>
+    /// Clears the occupied units list.
+    /// </summary>
+    public void ClearOccupyingUnits()
+    {
+        /// TODO: Is it necessary to destroy the game objects too?
+        occupyingUnits.Clear();
+        EventManager.instance.fireUnitsChangedEvent(this);
     }
 }

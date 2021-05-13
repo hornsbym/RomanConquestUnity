@@ -6,26 +6,22 @@ public class EventManager : MonoBehaviour
 {
     public static EventManager instance {get; set;}
 
-    public delegate void SelectCity(City city);
-    public static event SelectCity OnCitySelected;
+    // Delegate definitions
+    public delegate void voidEmptyDelegate();
+    public delegate void voidCityDelegate(City city);
+    public delegate void voidRoadDelegate(Road road);
 
-    public delegate void SelectRoad(Road road);
-    public static event SelectRoad OnRoadSelected;
+    // Event declarations
+    public static event voidEmptyDelegate OnTurnEnd;
+    public static event voidEmptyDelegate OnTurnBegin;
+    public static event voidEmptyDelegate OnDefaultSelected;
 
-    public delegate void UnitAdded(City city);
-    public static event UnitAdded OnUnitAdded;
+    public static event voidRoadDelegate OnRoadSelected;
 
-    public delegate void TurnEnd();
-    public static event TurnEnd OnTurnEnd;
-
-    public delegate void SelectDefault();
-    public static event SelectDefault OnDefaultSelected;
-
-    public delegate void SelectCombine(City city);
-    public static event SelectCombine OnCombineSelected;
-
-    public delegate void SelectMoveUnits(City city);
-    public static event SelectMoveUnits OnMoveUnitsSelected;
+    public static event voidCityDelegate OnCitySelected;
+    public static event voidCityDelegate OnUnitsChanged;
+    public static event voidCityDelegate OnCombineSelected;
+    public static event voidCityDelegate OnMoveUnitsSelected;
 
     void Start()
     {
@@ -42,16 +38,22 @@ public class EventManager : MonoBehaviour
         OnRoadSelected?.Invoke(road);
     }
 
-    public void fireUnitAddedEvent(City city)
+    public void fireUnitsChangedEvent(City city)
     {
         print("Unit added event fired.");
-        OnUnitAdded?.Invoke(city);
+        OnUnitsChanged?.Invoke(city);
     }
 
     public void fireTurnEndEvent()
     {
         print("Turn ended.");
         OnTurnEnd?.Invoke();
+    }
+
+    public void fireTurnBeginEvent()
+    {
+        print("Turn began.");
+        OnTurnBegin?.Invoke();
     }
 
     public void fireDefaultSelectedEvent() {

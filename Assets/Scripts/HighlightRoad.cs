@@ -1,9 +1,13 @@
 ﻿using UnityEngine;
 
-public class HighlightObject : MonoBehaviour
+public class HighlightRoad : MonoBehaviour
 {
-    public Material unselectedMaterial;
+    private Material unselectedMaterial;
     public Material selectedMaterial;
+
+    void Start() {
+        unselectedMaterial = GetComponent<Renderer>().material;
+    }
 
     void OnMouseEnter()
     {

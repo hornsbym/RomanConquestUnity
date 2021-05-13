@@ -120,7 +120,7 @@ public class Road : Place
         foreach(TravellingUnit tUnit in unitsEnRouteTo[city1]){
             Unit arrivedUnit = tUnit.progress();
             if (arrivedUnit != null) {
-                city1.AddUnit(arrivedUnit);
+                city1.AddOccupyingUnits(new List<Unit>(){ arrivedUnit });
             } else {
                 toCity1BackupUnitList.Add(tUnit);
             }
@@ -140,7 +140,7 @@ public class Road : Place
             Unit arrivedUnit = tUnit.progress();
             if (arrivedUnit != null)
             {
-                city2.AddUnit(arrivedUnit);
+                city2.AddOccupyingUnits(new List<Unit>() { arrivedUnit });
             }
             else
             {

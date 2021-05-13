@@ -46,10 +46,10 @@ public class UnitCombiner : MonoBehaviour
 
             foreach (Troop troop in troops) 
             {
-                currentCity.friendlyUnits.Remove(troop);
+                currentCity.occupyingUnits.Remove(troop);
             }
 
-            currentCity.AddUnit(century);
+            currentCity.AddOccupyingUnits(new List<Unit>(){century});
             
             return century;
         } else {
@@ -74,10 +74,10 @@ public class UnitCombiner : MonoBehaviour
 
             foreach (Century century in centuries)
             {
-                currentCity.friendlyUnits.Remove(century);
+                currentCity.occupyingUnits.Remove(century);
             }
 
-            currentCity.AddUnit(cohort);
+            currentCity.AddOccupyingUnits(new List<Unit>(){cohort});
 
             return cohort;
         }
@@ -105,10 +105,10 @@ public class UnitCombiner : MonoBehaviour
 
             foreach (Cohort cohort in cohorts)
             {
-                currentCity.friendlyUnits.Remove(cohort);
+                currentCity.occupyingUnits.Remove(cohort);
             }
 
-            currentCity.AddUnit(legion);
+            currentCity.AddOccupyingUnits(new List<Unit>(){ legion });
 
             return legion;
         }
