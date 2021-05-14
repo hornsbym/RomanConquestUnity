@@ -24,8 +24,8 @@ public class UIManager : MonoBehaviour
     void Awake()
     {
         EventManager.OnDefaultSelected += ActivateDefaultUI;
-        EventManager.OnCitySelected += ActivateSelectedCityUI;
-        EventManager.OnRoadSelected += ActivateSelectedRoadUI;
+        EventManager.OnSelectedCityUpdated += ActivateSelectedCityUI;
+        EventManager.OnSelectedRoadUpdatedEvent += ActivateSelectedRoadUI;
         EventManager.OnTurnEnd += ActivateDefaultUI;
         EventManager.OnCombineSelected += ActivateCombineUnitsUI;
         EventManager.OnMoveUnitsSelected += ActivateMoveUnitsUI;

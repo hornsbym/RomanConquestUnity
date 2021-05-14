@@ -9,7 +9,7 @@ public class SelectedRoadUI : MonoBehaviour
 
     void Awake() 
     {
-        EventManager.OnRoadSelected += PopulateComponents;
+        EventManager.OnSelectedRoadUpdatedEvent += PopulateComponents;
     }
 
     private void PopulateComponents(Road selectedRoad){

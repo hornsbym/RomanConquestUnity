@@ -8,7 +8,7 @@ public class RoadUnitsWidget : MonoBehaviour
     public UnitsScrollview city2BoundUnitsScrollview;
 
     void Awake() {
-        EventManager.OnRoadSelected += populateScrollviews;
+        EventManager.OnSelectedRoadUpdatedEvent += populateScrollviews;
     }
 
     private void populateScrollviews(Road selectedRoad) 

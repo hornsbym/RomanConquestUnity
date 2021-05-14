@@ -5,29 +5,30 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance { get; set; }
     
-    public Dictionary<Allegiance, Leader> leaderToCivMapping;
+    public Dictionary<Allegiance, Leader> allegianceToLeaderMapping;
+    public Allegiance playerAllegiance;
 
     public Unit unitSelection { get; set; }
     public City currentCity { get; set; }
     public int turnCount { get; set; }
     
     void Awake() {
-        EventManager.OnCitySelected += SelectCity;
-        EventManager.OnRoadSelected += SelectRoad;
+        EventManager.OnSelectedCityUpdated += SelectCity;
+        EventManager.OnSelectedRoadUpdatedEvent += SelectRoad;
         EventManager.OnDefaultSelected += DeselectAll;
         EventManager.OnTurnBegin += BeginTurn;
         EventManager.OnTurnEnd += EndTurn;
     }
 
-    // Start is called before the first frame update
     void Start()
     {   
         instance = this;
         unitSelection = null;
         turnCount = 0;
 
-        InitializeCivLeaders();
+        playerAllegiance = Allegiance.ROMAN;
 
+        InitializeCivLeaders();
 
         /// Start the first turn manually
         BeginTurn();
@@ -38,11 +39,11 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void InitializeCivLeaders() 
     {   
-        leaderToCivMapping = new Dictionary<Allegiance, Leader>();
+        allegianceToLeaderMapping = new Dictionary<Allegiance, Leader>();
 
-        leaderToCivMapping.Add(Allegiance.ROMAN, new Leader("Cesar", Allegiance.ROMAN));
-        leaderToCivMapping.Add(Allegiance.GALLIC, new Leader("Vercingetorix", Allegiance.GALLIC));
-        leaderToCivMapping.Add(Allegiance.INDEPENDENT, new Leader("Revolter", Allegiance.INDEPENDENT));
+        allegianceToLeaderMapping.Add(Allegiance.ROMAN, new Leader("Cesar", Allegiance.ROMAN));
+        allegianceToLeaderMapping.Add(Allegiance.GALLIC, new Leader("Vercingetorix", Allegiance.GALLIC));
+        allegianceToLeaderMapping.Add(Allegiance.INDEPENDENT, new Leader("Revolter", Allegiance.INDEPENDENT));
     }
 
     /// <summary>
@@ -53,10 +54,27 @@ public class GameManager : MonoBehaviour
         turnCount++;
         CollectAllTaxes();
 
-        ///// TODO: Remove once UI has been updated
-        print(
-            "Turn " + turnCount + ", " +
-            leaderToCivMapping[Allegiance.ROMAN].gold + " Gold");
+        // TODO: Debug mode only
+        PrintDebugInformation();
+    }
+
+    /// <summary>
+    /// Prints a bunch of useful information to the console.
+    /// Only used for debugging without relying on the UI.
+    /// </summary>
+    private void PrintDebugInformation() {
+        void PrintCityInformation(City city)
+        {
+            print(city.placeName + ": " + city.allegiance.ToString() + ", " + city.wealth + " wealth, " + city.taxRate + " tax rate, " + city.publicUnrest + " public unrest");
+        }
+
+        print("***** Turn " + turnCount + " *****");
+        print(allegianceToLeaderMapping[Allegiance.ROMAN].gold + " Gold");
+        foreach(City city in MapManager.instance.cities) 
+        {
+            PrintCityInformation(city);
+        }
+        print("********************");
     }
 
     /// <summary>
@@ -67,6 +85,14 @@ public class GameManager : MonoBehaviour
         ///// PUT ALL TURN-END LOGIC ABOVE THIS POINT /////
         /// The last thing that should be done at the turn end is initiate the next turn's beginning.
         EventManager.instance.fireTurnBeginEvent();
+    }
+
+    /// <summary>
+    /// Returns the player's leader object based on the allegiance set in the Start() method.
+    /// </summary>
+    public Leader GetPlayerLeaderObject() 
+    {
+        return allegianceToLeaderMapping[playerAllegiance];
     }
 
     /// <summary>

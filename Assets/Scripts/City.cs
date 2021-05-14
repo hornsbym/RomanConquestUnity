@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using UnityEngine;
+using System.Collections.Generic;
 using System.Linq;
 
 /// <summary>
@@ -25,6 +26,7 @@ public class City : Place
 
     // This is the percentage of wealth the leader will take from this city per turn.
     // Taking a larger portion increases the chance that a city will enter a state of revolt.
+    // This should always be between 0 and 1
     public float taxRate { get; set; }
 
     // This is the chance per turn that a city will revolt per turn.
@@ -37,7 +39,7 @@ public class City : Place
         occupyingUnits = new List<Unit>();
 
         publicUnrest = 0.0f;
-        taxRate = 1.0f;
+        taxRate = .249f;
     }
 
     /// <summary>
@@ -69,11 +71,26 @@ public class City : Place
             Revolt();
         } else {
             int tax = (int) (wealth * taxRate);
-            GameManager.instance.leaderToCivMapping[allegiance].gold += tax;
+            GameManager.instance.allegianceToLeaderMapping[allegiance].gold += tax;
         }
 
-        // TODO: Calculate public unrest
+        CalculatePublicUnrest();
+    }
 
+    /// <summary>
+    /// Performs calculation logic to figure the amount of public unrest in a city.
+    /// </summary>
+    private void CalculatePublicUnrest() 
+    {
+        if (taxRate >= 0f && taxRate <= .1f) {
+            publicUnrest = Mathf.Clamp((publicUnrest + CityManagementConstants.TIER_1_UNREST_DIFFERENCE), 0f, 1f);
+        } else if (taxRate > .1f && taxRate <= .25f) {
+            publicUnrest = Mathf.Clamp((publicUnrest + CityManagementConstants.TIER_2_UNREST_DIFFERENCE), 0f, 1f);
+        } else if (taxRate > .25f && taxRate <= .4f) {
+            publicUnrest = Mathf.Clamp((publicUnrest + CityManagementConstants.TIER_3_UNREST_DIFFERENCE), 0f, 1f);
+        } else if (taxRate > .4f) {
+            publicUnrest = Mathf.Clamp((publicUnrest + CityManagementConstants.TIER_4_UNREST_DIFFERENCE), 0f, 1f);
+        }
     }
 
     /// <summary>

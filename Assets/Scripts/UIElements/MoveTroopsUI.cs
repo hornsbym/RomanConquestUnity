@@ -17,7 +17,7 @@ public class MoveTroopsUI : MonoBehaviour
     void Awake()
     {
         scrollviewCityPairs = new List<ScrollviewCityPair>();
-        EventManager.OnCitySelected += AddNeighboringCityScrollviews;
+        EventManager.OnSelectedCityUpdated += AddNeighboringCityScrollviews;
         EventManager.OnUnitsChanged += AddNeighboringCityScrollviews;
         EventManager.OnMoveUnitsSelected += setSelectedCity;
 
@@ -125,11 +125,11 @@ public class MoveTroopsUI : MonoBehaviour
                 currentCity.SendFriendlyUnitsToNeighbor(pair.scrollview.GetUnits(), pair.city);
             }
         }
-        EventManager.instance.fireSelectCityEvent(currentCity);
+        EventManager.instance.fireSelectedCityUpdatedEvent(currentCity);
     }
 
     void CancelSelection()
     {
-        EventManager.instance.fireSelectCityEvent(currentCity);
+        EventManager.instance.fireSelectedCityUpdatedEvent(currentCity);
     }
 }

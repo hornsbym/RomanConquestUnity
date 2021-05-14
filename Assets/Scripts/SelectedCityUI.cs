@@ -16,7 +16,7 @@ public class SelectedCityUI : MonoBehaviour
 
         // Subscribe methods to events
         EventManager.OnUnitsChanged += InitializeFriendlyUnitList;
-        EventManager.OnCitySelected += PopulateComponents;
+        EventManager.OnSelectedCityUpdated += PopulateComponents;
     }
 
     void Update() {

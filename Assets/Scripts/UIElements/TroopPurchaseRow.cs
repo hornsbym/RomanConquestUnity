@@ -11,7 +11,7 @@ public class TroopPurchaseRow : MonoBehaviour
     private City currentCity;
 
     void Awake() {
-        EventManager.OnCitySelected += setCurrentCity;
+        EventManager.OnSelectedCityUpdated += setCurrentCity;
     }
 
     private void setCurrentCity(City city) 

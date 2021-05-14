@@ -16,9 +16,9 @@ public class EventManager : MonoBehaviour
     public static event voidEmptyDelegate OnTurnBegin;
     public static event voidEmptyDelegate OnDefaultSelected;
 
-    public static event voidRoadDelegate OnRoadSelected;
+    public static event voidRoadDelegate OnSelectedRoadUpdatedEvent;
 
-    public static event voidCityDelegate OnCitySelected;
+    public static event voidCityDelegate OnSelectedCityUpdated;
     public static event voidCityDelegate OnUnitsChanged;
     public static event voidCityDelegate OnCombineSelected;
     public static event voidCityDelegate OnMoveUnitsSelected;
@@ -28,14 +28,14 @@ public class EventManager : MonoBehaviour
         instance = this;
     }
 
-    public void fireSelectCityEvent(City city) {
-        print("City selection event fired.");
-        OnCitySelected?.Invoke(city);
+    public void fireSelectedCityUpdatedEvent(City city) {
+        print("Selected city updated.");
+        OnSelectedCityUpdated?.Invoke(city);
     }
 
-    public void fireSelectRoadEvent(Road road) {
-        print("Road selection event fired.");
-        OnRoadSelected?.Invoke(road);
+    public void fireSelectedRoadUpdatedEvent(Road road) {
+        print("Selected road updated.");
+        OnSelectedRoadUpdatedEvent?.Invoke(road);
     }
 
     public void fireUnitsChangedEvent(City city)

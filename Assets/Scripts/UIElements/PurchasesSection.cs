@@ -10,7 +10,7 @@ public class PurchasesSection : MonoBehaviour
     private List<GameObject> existingPurchaseRows;
 
     void Awake() {
-        EventManager.OnCitySelected += CreatePurchaseRows;
+        EventManager.OnSelectedCityUpdated += CreatePurchaseRows;
         existingPurchaseRows = new List<GameObject>();
     }
 
