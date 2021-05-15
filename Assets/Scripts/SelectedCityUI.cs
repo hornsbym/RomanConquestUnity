@@ -39,7 +39,7 @@ public class SelectedCityUI : MonoBehaviour
         UnitsScrollview scrollview = friendlyUnitsList.GetComponent<UnitsScrollview>();
 
         /// Set the unit scrollview title.
-        scrollview.AddTitle("Friendly Units");
+        scrollview.AddTitle("Occupying Units");
 
         /// Add the units and provide logic for what should be done whenever the 
         /// individual unit is clicked.
