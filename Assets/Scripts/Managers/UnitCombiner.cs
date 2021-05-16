@@ -11,7 +11,7 @@ public class UnitCombiner : MonoBehaviour
     private int cohortCount;
     private int legionCount;
 
-    public City currentCity;
+    private City currentCity;
 
     void Awake() 
     {
@@ -41,7 +41,7 @@ public class UnitCombiner : MonoBehaviour
         {
             centuryCount++;
             Century century = Instantiate(emptyUnitPrefab).AddComponent<Century>();
-            century.unitName = UnitFactory.countToOrdinal(centuryCount) + " Century";
+            century.unitName = Utilities.instance.CountToOrdinal(centuryCount) + " Century";
             century.SetUnits(troops);
 
             foreach (Troop troop in troops) 
@@ -69,7 +69,7 @@ public class UnitCombiner : MonoBehaviour
         && centuries.Count <= CombinedUnitConstants.COHORT_SIZE_UPPER_BOUND){
             cohortCount++;
             Cohort cohort = Instantiate(emptyUnitPrefab).AddComponent<Cohort>();
-            cohort.unitName = UnitFactory.countToOrdinal(cohortCount) + " Cohort";
+            cohort.unitName = Utilities.instance.CountToOrdinal(cohortCount) + " Cohort";
             cohort.SetUnits(centuries);
 
             foreach (Century century in centuries)
@@ -100,7 +100,7 @@ public class UnitCombiner : MonoBehaviour
         {
             legionCount++;
             Legion legion = Instantiate(emptyUnitPrefab).AddComponent<Legion>();
-            legion.unitName = UnitFactory.countToOrdinal(legionCount) + " Legion";
+            legion.unitName = Utilities.instance.CountToOrdinal(legionCount) + " Legion";
             legion.SetUnits(cohorts);
 
             foreach (Cohort cohort in cohorts)

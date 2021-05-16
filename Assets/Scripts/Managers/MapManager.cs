@@ -41,11 +41,11 @@ public class MapManager : MonoBehaviour
     private void InitializeCities()
     {
         /// Create the cities and city map markers here.
-        City rome = SpawnCityMarker("Rome", new Vector3(.91f, -4.15f, 0f), Allegiance.ROMAN, 25, new TroopClassifications[] { TroopClassifications.INFANTRY })
+        City rome = SpawnCityMarker("Rome", new Vector3(.91f, -4.15f, 0f), Allegiance.ROMAN, 25, new List<TroopClassification> { TroopClassification.INFANTRY })
             .GetComponent<City>();
         City florence = SpawnCityMarker("Florence", new Vector3(.55f, -3.65f, 0f), Allegiance.INDEPENDENT, 10)
             .GetComponent<City>();
-        City naples = SpawnCityMarker("Naples", new Vector3(1.39f, -4.45f, 0f), Allegiance.GALLIC, 15)
+        City naples = SpawnCityMarker("Naples", new Vector3(1.39f, -4.45f, 0f), Allegiance.INDEPENDENT, 15)
             .GetComponent<City>();
         
         /// Connect the cities by declaring neighbors.
@@ -67,7 +67,7 @@ public class MapManager : MonoBehaviour
     /// Instantiates a city marker and returns a reference to it.
     /// The "real" data is maintained in the marker's "City" component, which is also created here.
     /// </summary>
-    public GameObject SpawnCityMarker(string cityName, Vector3 cityPosition, Allegiance allegiance, int wealth, TroopClassifications[] troopsForSale = null)
+    public GameObject SpawnCityMarker(string cityName, Vector3 cityPosition, Allegiance allegiance, int wealth, List<TroopClassification> troopsForSale = null)
     {
         GameObject marker = (GameObject) Instantiate(cityMarkerPrefab, cityPosition, Quaternion.identity);
         City city = marker.AddComponent<City>();
@@ -78,7 +78,7 @@ public class MapManager : MonoBehaviour
         if (troopsForSale != null) {
             city.unitsForSale = troopsForSale;
         } else {
-            city.unitsForSale = new TroopClassifications[3];
+            city.unitsForSale = new List<TroopClassification>();
         }
 
         /// Keep track of the city in an array.

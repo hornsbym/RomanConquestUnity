@@ -1,50 +1,24 @@
+using System.Collections.Generic;
+
 public class Troop : Unit 
 {
-    public void InitializeTroop(TroopClassifications classification) 
+    public void InitializeTroop(TroopClassification classification, Allegiance allegiance) 
     {
-        switch(classification) {
-            case TroopClassifications.INFANTRY:
-                applyInfantryStats();
-                break;
-            case TroopClassifications.RANGED:
-                applyRangedStats();
-                break;
-            case TroopClassifications.CAVALRY:
-                applyCavalryStats();
-                break;
-        }
+        this.allegiance = allegiance; 
+        ApplyStats(classification);
     }
 
     /// <summary>
-    /// Gives the troop the starting stats of an infantry unit.
+    /// Gives the troop pre-defined starting stats based on classifications.
     /// </summary>
-    private void applyInfantryStats()
+    public void ApplyStats(TroopClassification classification) 
     {
-        melee = BaseStats.INFANTRY_MELEE;
-        ranged = BaseStats.INFANTRY_RANGED;
-        movement = BaseStats.INFANTRY_MOVEMENT;
-        defense = BaseStats.INFANTRY_DEFENSE;
-    }
+        Dictionary<Stat, int> stats = TroopStats.statLedger[classification];
 
-    /// <summary>
-    /// Gives the troop the starting stats of a ranged unit.
-    /// </summary>
-    private void applyRangedStats()
-    {
-        melee = BaseStats.RANGED_MELEE;
-        ranged = BaseStats.RANGED_RANGED;
-        movement = BaseStats.RANGED_MOVEMENT;
-        defense = BaseStats.RANGED_DEFENSE;
-    }
-
-    /// <summary>
-    /// Gives the troop the starting stats of a cavalry unit.
-    /// </summary>
-    private void applyCavalryStats()
-    {
-        melee = BaseStats.CAVALRY_MELEE;
-        ranged = BaseStats.CAVALRY_RANGED;
-        movement = BaseStats.CAVALRY_MOVEMENT;
-        defense = BaseStats.CAVALRY_DEFENSE;
+        melee = stats[Stat.MELEE];
+        ranged = stats[Stat.RANGED];
+        movement = stats[Stat.MOVEMENT];
+        defense = stats[Stat.DEFENSE];
+        health = stats[Stat.HEALTH];
     }
 }

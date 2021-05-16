@@ -19,7 +19,6 @@ public class EventManager : MonoBehaviour
     public static event voidRoadDelegate OnSelectedRoadUpdatedEvent;
 
     public static event voidCityDelegate OnSelectedCityUpdated;
-    public static event voidCityDelegate OnUnitsChanged;
     public static event voidCityDelegate OnCombineSelected;
     public static event voidCityDelegate OnMoveUnitsSelected;
 
@@ -36,12 +35,6 @@ public class EventManager : MonoBehaviour
     public void fireSelectedRoadUpdatedEvent(Road road) {
         print("Selected road updated.");
         OnSelectedRoadUpdatedEvent?.Invoke(road);
-    }
-
-    public void fireUnitsChangedEvent(City city)
-    {
-        print("Unit added event fired.");
-        OnUnitsChanged?.Invoke(city);
     }
 
     public void fireTurnEndEvent()

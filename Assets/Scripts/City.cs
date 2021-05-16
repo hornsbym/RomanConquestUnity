@@ -16,7 +16,7 @@ public class City : Place
     public List<Unit> occupyingUnits { get; set; }
 
     // Tracks which units the city can sell
-    public TroopClassifications[] unitsForSale;
+    public List<TroopClassification> unitsForSale;
 
     // Keeps track of who the city is allied with
     public Allegiance allegiance { get; set; }
@@ -33,13 +33,18 @@ public class City : Place
     // This should always be between 0 and 1.
     public float publicUnrest { get; set; }
 
+    // Any time a city does something, set this to false.
+    // It will be reset to true at the beginning of each turn.
+    public bool hasAction { get; private set; }
+
     /// Called whenever the component is added to an object.
     void Awake() {
         neighbors = new List<Neighbor>();
         occupyingUnits = new List<Unit>();
 
-        publicUnrest = 0.0f;
-        taxRate = .249f;
+        publicUnrest = 0f;
+        taxRate = 0f;
+        hasAction = true;
     }
 
     /// <summary>
@@ -65,16 +70,20 @@ public class City : Place
     /// </summary>
     public void CollectTaxes() 
     {
-        /// Check if the city should revolt
-        float chance = UnityEngine.Random.Range(0f, 1f);
-        if (publicUnrest > chance) {
-            Revolt();
-        } else {
-            int tax = (int) (wealth * taxRate);
-            GameManager.instance.allegianceToLeaderMapping[allegiance].gold += tax;
-        }
+        /// Independent cities won't collect taxes or revolt
+        if (this.allegiance != Allegiance.INDEPENDENT) {
+            /// Check if the city should revolt
+            float chance = UnityEngine.Random.Range(0f, 1f);
+            if (publicUnrest > chance)
+            {
+                Revolt();
+            } else {
+                int tax = (int)(wealth * taxRate);
+                GameManager.instance.allegianceToLeaderMapping[allegiance].gold += tax;
+            }
 
-        CalculatePublicUnrest();
+            CalculatePublicUnrest();
+        }
     }
 
     /// <summary>
@@ -94,14 +103,30 @@ public class City : Place
     }
 
     /// <summary>
+    /// Consumes the city's per-turn action.
+    /// </summary>
+    public void UseAction()
+    {
+        this.hasAction = false;
+    }
+
+    /// <summary>
+    /// Resets the city's per-turn action.
+    /// </summary>
+    public void ResetAction()
+    {
+        this.hasAction = true;
+    }
+
+    /// <summary>
     /// Performs revolt logic, primarily setting the allegiance to independent.
     /// Also removes any friendly units in the city and 
     /// will eventually spawn independently aligned units.
     /// </summary>
     private void Revolt() 
     {
-        ChangeAllegiance(Allegiance.INDEPENDENT);
         ClearOccupyingUnits();
+        AddOccupyingUnits(UnitFactory.instance.GenerateTroop(TroopClassification.INFANTRY, Allegiance.INDEPENDENT));
     }
 
     /// <summary>
@@ -166,6 +191,7 @@ public class City : Place
     public void ChangeAllegiance(Allegiance newAllegiance) 
     {
         this.allegiance = newAllegiance;
+        EventManager.instance.fireSelectedCityUpdatedEvent(this);
     }
 
     /// <summary>
@@ -174,11 +200,11 @@ public class City : Place
     public void AddOccupyingUnits<T>(List<T> units) where T : Unit
     {   
         occupyingUnits.AddRange(units);
-        EventManager.instance.fireUnitsChangedEvent(this);
+        EventManager.instance.fireSelectedCityUpdatedEvent(this);
 
         /// Handles changing allegiances if friendly units are the only units in the city.
         if (this.occupyingUnits.Count > 0) {
-            this.allegiance = occupyingUnits[0].allegiance;
+            ChangeAllegiance(occupyingUnits[0].allegiance);
         }
     }
 
@@ -200,7 +226,7 @@ public class City : Place
         this.occupyingUnits = revisedUnitsList;
 
         /// Send an event informing the rest of the game that the units have changed.
-        EventManager.instance.fireUnitsChangedEvent(this);
+        EventManager.instance.fireSelectedCityUpdatedEvent(this);
     }
 
     /// <summary>
@@ -210,6 +236,6 @@ public class City : Place
     {
         /// TODO: Is it necessary to destroy the game objects too?
         occupyingUnits.Clear();
-        EventManager.instance.fireUnitsChangedEvent(this);
+        EventManager.instance.fireSelectedCityUpdatedEvent(this);
     }
 }

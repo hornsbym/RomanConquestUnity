@@ -21,14 +21,16 @@ public class PurchasesSection : MonoBehaviour
     {
         DeletePurchaseRows();
 
-        for (int i = 0; i < selectedCity.unitsForSale.Length; i++)
+        foreach (TroopClassification troopClass in selectedCity.unitsForSale)
         {
             GameObject row = Instantiate(troopPurchaseRowPrefab, purchaseButtonRowContent.GetComponent<RectTransform>(), false);
             row.transform.SetParent(purchaseButtonRowContent.GetComponent<RectTransform>());
 
-            row.GetComponent<TroopPurchaseRow>().Initialize(selectedCity.unitsForSale[i]);
+            row.GetComponent<TroopPurchaseRow>().Initialize(troopClass, selectedCity);
             existingPurchaseRows.Add(row);
         }
+
+        print("Created purchase rows");
     }
 
     /// <summary>

@@ -8,6 +8,8 @@ public class CityDetailsPanel : MonoBehaviour
     [SerializeField] private Text wealthAmountText;
     [SerializeField] private Text publicUnrestPercentageText;
     [SerializeField] private InputField taxInputField;
+    [SerializeField] private Text allegianceValueText;
+
 
     void Awake()
     {
@@ -20,10 +22,12 @@ public class CityDetailsPanel : MonoBehaviour
     /// </summary>
     private void PopulateComponents (City city) 
     {
+
+        allegianceValueText.text = Utilities.instance.UppercaseFirstLetter(city.allegiance.ToString());
         wealthAmountText.text = city.wealth.ToString() + " Gold";
-        publicUnrestPercentageText.text = (city.publicUnrest * 100).ToString() + "%";
+        publicUnrestPercentageText.text = ((int) (city.publicUnrest * 100)).ToString() + "%";
         
-        taxInputField.text = (city.taxRate * 100).ToString() + "%";
+        taxInputField.text = ((int) (city.taxRate * 100)).ToString() + "%";
         if (city.allegiance == GameManager.instance.playerAllegiance) {
             taxInputField.enabled = true;
             taxInputField.ActivateInputField();

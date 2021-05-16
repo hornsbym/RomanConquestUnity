@@ -18,7 +18,6 @@ public class MoveTroopsUI : MonoBehaviour
     {
         scrollviewCityPairs = new List<ScrollviewCityPair>();
         EventManager.OnSelectedCityUpdated += AddNeighboringCityScrollviews;
-        EventManager.OnUnitsChanged += AddNeighboringCityScrollviews;
         EventManager.OnMoveUnitsSelected += setSelectedCity;
 
         confirmButton.onClick.AddListener(ConfirmSelection);

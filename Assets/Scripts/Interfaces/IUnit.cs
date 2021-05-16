@@ -7,7 +7,6 @@
     int ranged { get; set; }
     int movement { get; set; }
     int defense { get; set; }
-    int cost { get; set; }
     int xp { get; set; }
     int xpToNextLevel { get; set; }
     int level { get; set; }

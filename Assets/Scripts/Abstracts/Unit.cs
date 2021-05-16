@@ -9,7 +9,6 @@ public abstract class Unit : MonoBehaviour, IUnit
     public int ranged { get; set; }
     public int movement { get; set; }
     public int defense { get; set; }
-    public int cost { get; set; }
     public int xp { get; set; }
     public int xpToNextLevel { get; set; }
     public int level { get; set; }

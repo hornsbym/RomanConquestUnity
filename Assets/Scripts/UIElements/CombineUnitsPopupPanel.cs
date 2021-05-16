@@ -15,7 +15,6 @@ public class CombineUnitsPopupPanel : MonoBehaviour
     
     void Awake() 
     {
-        EventManager.OnUnitsChanged += Initialize;
         EventManager.OnSelectedCityUpdated += Initialize;
 
     }

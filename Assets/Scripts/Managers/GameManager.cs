@@ -5,7 +5,7 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance { get; set; }
     
-    public Dictionary<Allegiance, Leader> allegianceToLeaderMapping;
+    public Dictionary<Allegiance, Leader> allegianceToLeaderMapping { get; set; }
     public Allegiance playerAllegiance;
 
     public Unit unitSelection { get; set; }
@@ -18,6 +18,10 @@ public class GameManager : MonoBehaviour
         EventManager.OnDefaultSelected += DeselectAll;
         EventManager.OnTurnBegin += BeginTurn;
         EventManager.OnTurnEnd += EndTurn;
+
+        playerAllegiance = Allegiance.ROMAN;
+
+        InitializeCivLeaders();
     }
 
     void Start()
@@ -26,12 +30,13 @@ public class GameManager : MonoBehaviour
         unitSelection = null;
         turnCount = 0;
 
-        playerAllegiance = Allegiance.ROMAN;
-
-        InitializeCivLeaders();
-
         /// Start the first turn manually
-        BeginTurn();
+        // BeginTurn();
+    }
+
+    public Leader GetPlayerLeader() 
+    {
+        return allegianceToLeaderMapping[playerAllegiance];
     }
 
     /// <summary>
@@ -53,6 +58,7 @@ public class GameManager : MonoBehaviour
     {
         turnCount++;
         CollectAllTaxes();
+        ResetLeaderCityActions(playerAllegiance);
 
         // TODO: Debug mode only
         PrintDebugInformation();
@@ -82,7 +88,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     private void EndTurn()
     {
-        ///// PUT ALL TURN-END LOGIC ABOVE THIS POINT /////
+        /// PUT ALL TURN-END LOGIC ABOVE THIS POINT ///
         /// The last thing that should be done at the turn end is initiate the next turn's beginning.
         EventManager.instance.fireTurnBeginEvent();
     }
@@ -134,6 +140,17 @@ public class GameManager : MonoBehaviour
     {
         foreach (City city in MapManager.instance.cities) {
             city.CollectTaxes();
+        }
+    }
+
+    /// <summary>
+    /// Enables the allegiance's cities to perform an action.
+    /// </summary>
+    private void ResetLeaderCityActions(Allegiance allegiance) {
+        foreach (City city in MapManager.instance.cities) {
+            if (city.allegiance == allegiance) {
+                city.ResetAction();
+            }
         }
     }
 }
