@@ -3,21 +3,19 @@
 /// Tracks data relevant to managing the civilization, like the amount of gold.
 /// The player will be one of these (or, at least it will contain a reference to one).
 /// </summary>
-public class Leader
+public class Emperor : Leader
 {
-    public Allegiance allegiance { get; set; }
-    public int gold { get; set; }
-    public string leaderName { get; set; }
-
-    public Leader(string leaderName, Allegiance allegiance) {
+    public Emperor(string leaderName, Allegiance allegiance) {
         this.allegiance = allegiance;
         this.leaderName = leaderName;
-        this.gold = 10;
+        this.gold = 100;
+
+        this.brain = new EmperorBrain(this);
     }
 
     /// <summary>
-    /// Checks whether or not the leader has enough gold to purchase a given troop.
-    /// If the leader can purchase the troops, remove the gold and generate the troops.
+    /// Checks whether or not the Emperor has enough gold to purchase a given troop.
+    /// If the Emperor can purchase the troops, remove the gold and generate the troops.
     /// </summary>
     public void PurchaseTroop(TroopClassification troopClass, City city)
     {

@@ -40,4 +40,9 @@ public class TroopStats : MonoBehaviour
             { TroopClassification.RANGED, ranged }
         };
     }
+
+    public static int GetTroopStat(TroopClassification classification, Stat stat) 
+    {
+        return TroopStats.statLedger[classification][stat];
+    }
 }

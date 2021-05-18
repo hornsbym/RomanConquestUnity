@@ -29,6 +29,6 @@ public class DefaultUI : MonoBehaviour
 
     private void SetGoldCountText()
     {
-        goldCountText.text = GameManager.instance.GetPlayerLeaderObject().gold.ToString() + " Gold";
+        goldCountText.text = GameManager.instance.GetPlayerLeader().gold.ToString() + " Gold";
     }
 }

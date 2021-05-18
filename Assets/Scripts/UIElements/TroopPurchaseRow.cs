@@ -31,7 +31,7 @@ public class TroopPurchaseRow : MonoBehaviour
         } else {
             purchaseButton.onClick.AddListener(() =>
             {
-                GameManager.instance.allegianceToLeaderMapping[GameManager.instance.playerAllegiance].PurchaseTroop(classification, city);
+                GameManager.instance.GetPlayerLeader().PurchaseTroop(classification, city);
             });
 
             purchaseButton.interactable = true;

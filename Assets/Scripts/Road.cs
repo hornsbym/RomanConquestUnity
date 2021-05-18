@@ -95,10 +95,6 @@ public class Road : Place
     /// </summary>
     public void PutUnitOnRoad(Unit unit, City currentCity) 
     {
-        print(unit.unitName + " put on road " + city1.placeName + " -> " + city2.placeName);
-        print("Units en route to " + city1.placeName + ": " + string.Join(", ", unitsEnRouteTo[city1]));
-        print("Units en route to " + city2.placeName + ": " + string.Join(", ", unitsEnRouteTo[city2]));
-
         // If the unit is currently in city1, send the unit to city2
         if (currentCity == city1) {
             unitsEnRouteTo[city2].Add(new TravellingUnit(unit, defaultTurnCount));

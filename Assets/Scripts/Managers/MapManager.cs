@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class MapManager : MonoBehaviour
@@ -41,26 +40,45 @@ public class MapManager : MonoBehaviour
     private void InitializeCities()
     {
         /// Create the cities and city map markers here.
-        City rome = SpawnCityMarker("Rome", new Vector3(.91f, -4.15f, 0f), Allegiance.ROMAN, 25, new List<TroopClassification> { TroopClassification.INFANTRY })
+        City rome = SpawnCityMarker("Rome", new Vector3(.91f, -4.15f, 0f), Allegiance.ROMAN, 20, new List<TroopClassification> { TroopClassification.INFANTRY })
             .GetComponent<City>();
-        City florence = SpawnCityMarker("Florence", new Vector3(.55f, -3.65f, 0f), Allegiance.INDEPENDENT, 10)
+        City arretium = SpawnCityMarker("Arretium", new Vector3(.55f, -3.65f, 0f), Allegiance.INDEPENDENT, 10)
             .GetComponent<City>();
-        City naples = SpawnCityMarker("Naples", new Vector3(1.39f, -4.45f, 0f), Allegiance.INDEPENDENT, 15)
+        City neapolis = SpawnCityMarker("Neapolis", new Vector3(1.39f, -4.45f, 0f), Allegiance.INDEPENDENT, 10)
             .GetComponent<City>();
+        City genua = SpawnCityMarker("Genua", new Vector3(-.1f, -3.23f, 0f), Allegiance.INDEPENDENT, 10)
+            .GetComponent<City>();
+        City vienne = SpawnCityMarker("Vienne", new Vector3(-.8f, -2.9f, 0f), Allegiance.INDEPENDENT, 10, new List<TroopClassification>() { TroopClassification.INFANTRY })
+            .GetComponent<City>();
+        City aventicum = SpawnCityMarker("Aventicum", new Vector3(-.51f, -2.24f, 0f), Allegiance.INDEPENDENT, 10)
+            .GetComponent<City>();
+        City cenabum = SpawnCityMarker("Cenabum", new Vector3(-2.03f, -1.97f, 0f), Allegiance.GALLIC, 20, new List<TroopClassification> { TroopClassification.CAVALRY })
+            .GetComponent<City>();
+            
         
         /// Connect the cities by declaring neighbors.
         /// Road objects will be build automatically based on this data.
-        /// How do we keep from getting duplicate roads? Iterate over all existing roads
-        /// and making sure none already exist from one to the next
-        rome.AddNeighbor(florence, 1);
-        rome.AddNeighbor(naples, 1);
-        florence.AddNeighbor(rome, 1);
-        naples.AddNeighbor(rome, 1);
+        RecordNeighbors(rome, arretium, 1);
+        RecordNeighbors(rome, neapolis, 1);
+        RecordNeighbors(arretium, genua, 2);
+        RecordNeighbors(genua, arretium, 2);
+        RecordNeighbors(genua, vienne, 2);
+        RecordNeighbors(vienne, aventicum, 3);
+        RecordNeighbors(vienne, cenabum, 5);
 
         // Connect the cities with roads
         foreach(City city in cities){
             city.ConnectWithNeighbors();
         }
+    }
+
+    /// <summary>
+    /// Record each city as neighbors to one another.
+    /// </summary>
+    private void RecordNeighbors(City city1, City city2, int distance) 
+    {
+        city1.AddNeighbor(city2, distance);
+        city2.AddNeighbor(city1, distance);
     }
 
     /// <summary>
@@ -74,6 +92,7 @@ public class MapManager : MonoBehaviour
         city.placeName = cityName;
         city.allegiance = allegiance;
         city.wealth = wealth;
+        city.governor = new Governor(city.placeName + " Governor", city, AIStrategy.DEFAULT);
 
         if (troopsForSale != null) {
             city.unitsForSale = troopsForSale;

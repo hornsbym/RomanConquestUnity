@@ -10,6 +10,16 @@ public class Utilities : MonoBehaviour
     }
 
     /// <summary>
+    /// Prints the string to the console only if debug mode is true.
+    /// </summary>
+    public void Debug(String message) 
+    {   
+        if (GameManager.instance.debugMode) {
+           print(message);
+        }
+    }
+
+    /// <summary>
     /// Creates an ordinal number from an integer.
     /// Used for naming units.
     /// </summary>

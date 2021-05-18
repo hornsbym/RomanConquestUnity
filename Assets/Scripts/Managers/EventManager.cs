@@ -19,6 +19,7 @@ public class EventManager : MonoBehaviour
     public static event voidRoadDelegate OnSelectedRoadUpdatedEvent;
 
     public static event voidCityDelegate OnSelectedCityUpdated;
+    public static event voidCityDelegate OnUnitsChanged;
     public static event voidCityDelegate OnCombineSelected;
     public static event voidCityDelegate OnMoveUnitsSelected;
 
@@ -28,41 +29,47 @@ public class EventManager : MonoBehaviour
     }
 
     public void fireSelectedCityUpdatedEvent(City city) {
-        print("Selected city updated.");
+        Utilities.instance.Debug("Selected city updated.");
         OnSelectedCityUpdated?.Invoke(city);
     }
 
     public void fireSelectedRoadUpdatedEvent(Road road) {
-        print("Selected road updated.");
+        Utilities.instance.Debug("Selected road updated.");
         OnSelectedRoadUpdatedEvent?.Invoke(road);
     }
 
     public void fireTurnEndEvent()
     {
-        print("Turn ended.");
+        Utilities.instance.Debug("Turn ended.");
         OnTurnEnd?.Invoke();
     }
 
     public void fireTurnBeginEvent()
     {
-        print("Turn began.");
+        Utilities.instance.Debug("Turn began.");
         OnTurnBegin?.Invoke();
     }
 
     public void fireDefaultSelectedEvent() {
-        print("Default selected.");
+        Utilities.instance.Debug("Default selected.");
         OnDefaultSelected?.Invoke();
     }
 
     public void fireCombineSelectedEvent(City city)
     {
-        print("Combine troops selected.");
+        Utilities.instance.Debug("Combine troops selected.");
         OnCombineSelected?.Invoke(city);
     }
 
     public void fireMoveSelectedEvent(City city)
     {
-        print("Move troops selected.");
+        Utilities.instance.Debug("Move troops selected.");
         OnMoveUnitsSelected?.Invoke(city);
+    }
+
+    public void fireUnitsChangedEvent(City city)
+    {
+        Utilities.instance.Debug("Units changed in " + city.placeName);
+        OnUnitsChanged?.Invoke(city);
     }
 }

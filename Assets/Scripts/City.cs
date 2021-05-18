@@ -13,7 +13,10 @@ public class City : Place
     private List<Neighbor> neighbors { get; set; }
 
     // Tracks units within the city
-    public List<Unit> occupyingUnits { get; set; }
+    public List<Unit> occupyingUnits { get; private set; }
+
+    // Governor in charge of controlling independent cities
+    public Governor governor { get; set; }
 
     // Tracks which units the city can sell
     public List<TroopClassification> unitsForSale;
@@ -27,11 +30,23 @@ public class City : Place
     // This is the percentage of wealth the leader will take from this city per turn.
     // Taking a larger portion increases the chance that a city will enter a state of revolt.
     // This should always be between 0 and 1
-    public float taxRate { get; set; }
+    private float _taxRate;
+    public float taxRate { 
+        get => _taxRate; 
+        set {
+            _taxRate = Mathf.Clamp(value, 0f, 1f);
+        }
+    }
 
     // This is the chance per turn that a city will revolt per turn.
     // This should always be between 0 and 1.
-    public float publicUnrest { get; set; }
+    private float _publicUnrest;
+    public float publicUnrest { 
+        get => _publicUnrest; 
+        set {
+            _publicUnrest = Mathf.Clamp(value, 0f, 1f);
+        }
+    }
 
     // Any time a city does something, set this to false.
     // It will be reset to true at the beginning of each turn.
@@ -70,19 +85,22 @@ public class City : Place
     /// </summary>
     public void CollectTaxes() 
     {
-        /// Independent cities won't collect taxes or revolt
+        int tax = (int)(wealth * taxRate);
+
+        /// Independent cities give their taxes directly to the governor
+        /// And don't calculate public unrest or revolt
         if (this.allegiance != Allegiance.INDEPENDENT) {
             /// Check if the city should revolt
             float chance = UnityEngine.Random.Range(0f, 1f);
-            if (publicUnrest > chance)
-            {
+            if (publicUnrest > chance) {
                 Revolt();
             } else {
-                int tax = (int)(wealth * taxRate);
                 GameManager.instance.allegianceToLeaderMapping[allegiance].gold += tax;
             }
 
             CalculatePublicUnrest();
+        } else {
+            governor.gold += tax;
         }
     }
 
@@ -92,13 +110,13 @@ public class City : Place
     private void CalculatePublicUnrest() 
     {
         if (taxRate >= 0f && taxRate <= .1f) {
-            publicUnrest = Mathf.Clamp((publicUnrest + CityManagementConstants.TIER_1_UNREST_DIFFERENCE), 0f, 1f);
+            publicUnrest = publicUnrest + CityManagementConstants.TIER_1_UNREST_DIFFERENCE;
         } else if (taxRate > .1f && taxRate <= .25f) {
-            publicUnrest = Mathf.Clamp((publicUnrest + CityManagementConstants.TIER_2_UNREST_DIFFERENCE), 0f, 1f);
+            publicUnrest = publicUnrest + CityManagementConstants.TIER_2_UNREST_DIFFERENCE;
         } else if (taxRate > .25f && taxRate <= .4f) {
-            publicUnrest = Mathf.Clamp((publicUnrest + CityManagementConstants.TIER_3_UNREST_DIFFERENCE), 0f, 1f);
+            publicUnrest = publicUnrest + CityManagementConstants.TIER_3_UNREST_DIFFERENCE;
         } else if (taxRate > .4f) {
-            publicUnrest = Mathf.Clamp((publicUnrest + CityManagementConstants.TIER_4_UNREST_DIFFERENCE), 0f, 1f);
+            publicUnrest = publicUnrest + CityManagementConstants.TIER_4_UNREST_DIFFERENCE;
         }
     }
 
@@ -166,6 +184,7 @@ public class City : Place
 
     /// <summary>
     /// Adds a neighbor to the list of neighboring cities.
+    /// Automatically adds this city to the neighboring city's neighbors.
     /// </summary>
     public void AddNeighbor(City neighboringCity, int distance) 
     {
@@ -200,7 +219,7 @@ public class City : Place
     public void AddOccupyingUnits<T>(List<T> units) where T : Unit
     {   
         occupyingUnits.AddRange(units);
-        EventManager.instance.fireSelectedCityUpdatedEvent(this);
+        EventManager.instance.fireUnitsChangedEvent(this);
 
         /// Handles changing allegiances if friendly units are the only units in the city.
         if (this.occupyingUnits.Count > 0) {
@@ -226,7 +245,7 @@ public class City : Place
         this.occupyingUnits = revisedUnitsList;
 
         /// Send an event informing the rest of the game that the units have changed.
-        EventManager.instance.fireSelectedCityUpdatedEvent(this);
+        EventManager.instance.fireUnitsChangedEvent(this);
     }
 
     /// <summary>
@@ -236,6 +255,6 @@ public class City : Place
     {
         /// TODO: Is it necessary to destroy the game objects too?
         occupyingUnits.Clear();
-        EventManager.instance.fireSelectedCityUpdatedEvent(this);
+        EventManager.instance.fireUnitsChangedEvent(this);
     }
 }

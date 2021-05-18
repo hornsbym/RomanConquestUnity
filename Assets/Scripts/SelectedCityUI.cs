@@ -7,8 +7,6 @@ public class SelectedCityUI : MonoBehaviour
     public Text cityTitle;
     public GameObject friendlyUnitsList;
     public GameObject friendlyUnitDetails;
-    public GameObject purchasePanel;
-    public GameObject cityOptions;
 
     void Awake() 
     {
@@ -17,6 +15,7 @@ public class SelectedCityUI : MonoBehaviour
         // Subscribe methods to events
         EventManager.OnSelectedCityUpdated += InitializeFriendlyUnitList;
         EventManager.OnSelectedCityUpdated += PopulateComponents;
+        EventManager.OnUnitsChanged += InitializeFriendlyUnitList;
     }
 
     void Update() {
