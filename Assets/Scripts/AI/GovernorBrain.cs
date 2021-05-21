@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 /// <summary>
 /// A more limited version of the standard Brain class.
@@ -20,8 +21,9 @@ public class GovernorBrain : Brain
     {
         List<Action> actions = new List<Action>();
 
-        actions.AddRange(CreatePurchaseActions());
+        actions.AddRange(CreatePurchaseTroopsActions());
         actions.Add(CreateTaxRateAction());
+        actions.Add(CreatePurchaseBuildingAction());
 
         return actions;
     }
@@ -29,13 +31,13 @@ public class GovernorBrain : Brain
     /// <summary>
     /// Creates the possible purchases a leader can make.
     /// </summary>
-    private List<Action> CreatePurchaseActions()
+    private List<Action> CreatePurchaseTroopsActions()
     {
         List<Action> actions = new List<Action>();
 
         foreach (TroopClassification troopClass in governor.city.unitsForSale)
         {
-            actions.Add(new PurchaseAction(governor.city, governor, troopClass));
+            actions.Add(new PurchaseTroopAction(governor.city, governor, troopClass));
         }
 
         return actions;
@@ -47,6 +49,17 @@ public class GovernorBrain : Brain
     private Action CreateTaxRateAction()
     {
         return new TaxRateAction(this.governor.city, .2f);
+    }
+
+    /// <summary>
+    /// Randomly selects one of the buildings for purchase within the city and 
+    /// creates a purchase building out of it.
+    /// </summary>
+    private Action CreatePurchaseBuildingAction() 
+    {   
+        /// TODO: Make this not random.
+        Building randBuilding = governor.city.buildingsForPurchase[Random.Range(0, governor.city.buildingsForPurchase.Count)];
+        return new PurchaseBuildingAction(governor.city, governor, randBuilding);
     }
 
     /// <summary>

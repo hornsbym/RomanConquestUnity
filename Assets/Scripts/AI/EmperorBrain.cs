@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class EmperorBrain : Brain
 {
@@ -32,22 +33,34 @@ public class EmperorBrain : Brain
     {   
         List<Action> actions = new List<Action>();
 
-        actions.AddRange(CreatePurchaseActions(city));
+        actions.AddRange(CreatePurchaseTroopsActions(city));
         actions.Add(CreateTaxRateAction(city));
+        actions.Add(CreatePurchaseBuildingAction(city));
 
         return actions;
+    }
+
+    /// <summary>
+    /// Randomly selects one of the buildings for purchase within the city and 
+    /// creates a purchase building out of it.
+    /// </summary>
+    private Action CreatePurchaseBuildingAction(City city)
+    {
+        /// TODO: Make this not random.
+        Building randBuilding = city.buildingsForPurchase[Random.Range(0, city.buildingsForPurchase.Count)];
+        return new PurchaseBuildingAction(city, emperor, randBuilding);
     }
 
 
     /// <summary>
     /// Creates the possible purchases a leader can make.
     /// </summary>
-    private List<Action> CreatePurchaseActions (City city) 
+    private List<Action> CreatePurchaseTroopsActions (City city) 
     {
         List<Action> actions = new List<Action>();
 
         foreach (TroopClassification troopClass in city.unitsForSale) {
-            actions.Add(new PurchaseAction(city, emperor, troopClass));
+            actions.Add(new PurchaseTroopAction(city, emperor, troopClass));
         }
 
         return actions;

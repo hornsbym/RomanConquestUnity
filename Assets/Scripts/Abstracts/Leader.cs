@@ -16,4 +16,17 @@ public abstract class Leader
     {
         this.brain.TakeTurn();
     }
+
+    /// <summary>
+    /// If a building can be built in a particular city and a 
+    /// leader has enough money to buy it, perform the purchase.
+    /// </summary>
+    public void PurchaseBuilding(Building building, City city)
+    {
+        if ((city.CanBuild(building)) && (gold > building.cost))
+        {
+            city.AddBuilding(building);
+            this.gold -= building.cost;
+        }
+    }
 }

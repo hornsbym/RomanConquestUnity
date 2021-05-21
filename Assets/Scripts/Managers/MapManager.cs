@@ -40,7 +40,7 @@ public class MapManager : MonoBehaviour
     private void InitializeCities()
     {
         /// Create the cities and city map markers here.
-        City rome = SpawnCityMarker("Rome", new Vector3(.91f, -4.15f, 0f), Allegiance.ROMAN, 20, new List<TroopClassification> { TroopClassification.INFANTRY })
+        City rome = SpawnCityMarker("Rome", new Vector3(.91f, -4.15f, 0f), Allegiance.ROMAN, 20, new List<Building> { new Barracks() })
             .GetComponent<City>();
         City arretium = SpawnCityMarker("Arretium", new Vector3(.55f, -3.65f, 0f), Allegiance.INDEPENDENT, 10)
             .GetComponent<City>();
@@ -48,11 +48,11 @@ public class MapManager : MonoBehaviour
             .GetComponent<City>();
         City genua = SpawnCityMarker("Genua", new Vector3(-.1f, -3.23f, 0f), Allegiance.INDEPENDENT, 10)
             .GetComponent<City>();
-        City vienne = SpawnCityMarker("Vienne", new Vector3(-.8f, -2.9f, 0f), Allegiance.INDEPENDENT, 10, new List<TroopClassification>() { TroopClassification.INFANTRY })
+        City vienne = SpawnCityMarker("Vienne", new Vector3(-.8f, -2.9f, 0f), Allegiance.INDEPENDENT, 10, new List<Building>() { new Range() })
             .GetComponent<City>();
         City aventicum = SpawnCityMarker("Aventicum", new Vector3(-.51f, -2.24f, 0f), Allegiance.INDEPENDENT, 10)
             .GetComponent<City>();
-        City cenabum = SpawnCityMarker("Cenabum", new Vector3(-2.03f, -1.97f, 0f), Allegiance.GALLIC, 20, new List<TroopClassification> { TroopClassification.CAVALRY })
+        City cenabum = SpawnCityMarker("Cenabum", new Vector3(-2.03f, -1.97f, 0f), Allegiance.GALLIC, 20, new List<Building> { new Stables() })
             .GetComponent<City>();
             
         
@@ -85,7 +85,7 @@ public class MapManager : MonoBehaviour
     /// Instantiates a city marker and returns a reference to it.
     /// The "real" data is maintained in the marker's "City" component, which is also created here.
     /// </summary>
-    public GameObject SpawnCityMarker(string cityName, Vector3 cityPosition, Allegiance allegiance, int wealth, List<TroopClassification> troopsForSale = null)
+    public GameObject SpawnCityMarker(string cityName, Vector3 cityPosition, Allegiance allegiance, int wealth, List<Building> startingBuildings = null)
     {
         GameObject marker = (GameObject) Instantiate(cityMarkerPrefab, cityPosition, Quaternion.identity);
         City city = marker.AddComponent<City>();
@@ -94,10 +94,10 @@ public class MapManager : MonoBehaviour
         city.wealth = wealth;
         city.governor = new Governor(city.placeName + " Governor", city, AIStrategy.DEFAULT);
 
-        if (troopsForSale != null) {
-            city.unitsForSale = troopsForSale;
-        } else {
-            city.unitsForSale = new List<TroopClassification>();
+        if (startingBuildings != null) {
+            foreach (Building building in startingBuildings) {
+                city.AddBuilding(building);
+            }
         }
 
         /// Keep track of the city in an array.

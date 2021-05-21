@@ -1,11 +1,11 @@
-﻿public class PurchaseAction : Action
+﻿public class PurchaseTroopAction : Action
 {
     private City city;
     private Leader leader;
     private TroopClassification troopClass;
 
 
-    public PurchaseAction(City city, Leader leader, TroopClassification troopClassification) {
+    public PurchaseTroopAction(City city, Leader leader, TroopClassification troopClassification) {
         this.city = city;
         this.leader = leader;
         this.troopClass = troopClassification;

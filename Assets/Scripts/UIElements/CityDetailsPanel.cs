@@ -9,6 +9,7 @@ public class CityDetailsPanel : MonoBehaviour
     [SerializeField] private Text publicUnrestPercentageText;
     [SerializeField] private InputField taxInputField;
     [SerializeField] private Text allegianceValueText;
+    [SerializeField] private Text buildingsValueText;
 
 
     void Awake()
@@ -34,6 +35,17 @@ public class CityDetailsPanel : MonoBehaviour
         } else {
             taxInputField.enabled = false;
             taxInputField.DeactivateInputField();
+        }
+
+        if (city.buildings.Count == 0) {
+            buildingsValueText.text = "None";
+        } else {
+            string buildingsString = "";
+            foreach (Building building in city.buildings) {
+                buildingsString += building.buildingName + ", ";
+            }
+            buildingsString = buildingsString.Substring(0, buildingsString.Length-2);
+            buildingsValueText.text = buildingsString;
         }
     }
 

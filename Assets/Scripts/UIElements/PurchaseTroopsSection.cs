@@ -2,7 +2,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class PurchasesSection : MonoBehaviour
+public class PurchaseTroopsSection : MonoBehaviour
 {
     public GameObject purchaseButtonRowContent;
     public GameObject troopPurchaseRowPrefab;

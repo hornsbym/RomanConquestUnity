@@ -22,6 +22,7 @@ public class EventManager : MonoBehaviour
     public static event voidCityDelegate OnUnitsChanged;
     public static event voidCityDelegate OnCombineSelected;
     public static event voidCityDelegate OnMoveUnitsSelected;
+    public static event voidCityDelegate OnCityActionConsumed;
 
     void Start()
     {
@@ -71,5 +72,11 @@ public class EventManager : MonoBehaviour
     {
         Utilities.instance.Debug("Units changed in " + city.placeName);
         OnUnitsChanged?.Invoke(city);
+    }
+
+    public void fireCityActionConsumedEvent(City city)
+    {
+        Utilities.instance.Debug(city.placeName + " action used");
+        OnCityActionConsumed?.Invoke(city);
     }
 }

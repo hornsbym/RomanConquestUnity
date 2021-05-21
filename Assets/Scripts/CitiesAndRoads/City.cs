@@ -52,14 +52,26 @@ public class City : Place
     // It will be reset to true at the beginning of each turn.
     public bool hasAction { get; private set; }
 
+    // Buildings built in the city. 
+    // Each building has a unique effect on the city.
+    // Only a limited number of buildings can be build in any one city at a time.
+    public int buildingLimit { get; set; }
+    public List<Building> buildings { get; set; }
+    public List<Building> buildingsForPurchase { get; set; }
+
     /// Called whenever the component is added to an object.
     void Awake() {
         neighbors = new List<Neighbor>();
         occupyingUnits = new List<Unit>();
+        buildings = new List<Building>();
+        unitsForSale = new List<TroopClassification>();
+        buildingsForPurchase = new List<Building>() { new Barracks(), new Range(), new Stables() };
+
+        buildingLimit = 3;
 
         publicUnrest = 0f;
         taxRate = 0f;
-        hasAction = true;
+        hasAction = true; 
     }
 
     /// <summary>
@@ -257,4 +269,49 @@ public class City : Place
         occupyingUnits.Clear();
         EventManager.instance.fireUnitsChangedEvent(this);
     }
-}
+
+    /// <summary>
+    /// Returns whether or not a building can be built.
+    /// </summary>
+    public bool CanBuild<T>(T building) where T : Building
+    {   
+        /// Can't build past the city's building limit
+        if (this.buildings.Count >= this.buildingLimit) {
+            return false;
+        } 
+        
+        /// Can't build two of the same building
+        else if (this.buildings.Contains(building)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /// <summary>
+    /// Adds the building to the list of buildings, if able.
+    /// Applies the building's affect and consumes the city's action.
+    /// </summary>
+    public void AddBuilding<T>(T building) where T : Building
+    {
+        if (CanBuild(building)) {
+            this.buildings.Add(building);
+            building.ApplyEffect(this);
+            this.UseAction();
+        }
+    }
+
+    /// <summary>
+    /// Removes the building from the list of buildings, if able.
+    /// Removes the building's affect and consumes the city's action.
+    /// </summary>
+    public void RemoveBuilding<T>(T building) where T : Building
+    {
+        if (this.buildings.Contains(building))
+        {
+            this.buildings.Add(building);
+            building.RemoveEffect(this); 
+            this.UseAction();
+        }
+    }
+ }
