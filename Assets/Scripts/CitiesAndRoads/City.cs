@@ -74,6 +74,11 @@ public class City : Place
         hasAction = true; 
     }
 
+    public override bool CanPlace(Unit unit)
+    {
+        return unit.allegiance == this.allegiance;
+    }
+
     /// <summary>
     /// Tracks adjacent cities.
     /// Pairs a City with an integer representing how many days 
@@ -179,19 +184,24 @@ public class City : Place
     public void SendFriendlyUnitsToNeighbor(List<Unit> units, City city) {
         Road roadToNeighbor = MapManager.instance.GetRoad(this, city);
 
-        foreach (Unit unit in units) {
-            roadToNeighbor.PutUnitOnRoad(unit, this);
-        }
+        if (units.Count > 0) {
+            if (roadToNeighbor.CanPlace(units[0])) {
+                foreach (Unit unit in units) {
+                    roadToNeighbor.PutUnitOnRoad(unit, this);
+                }
 
-        /// Removes units from the city if they're being put on the road
-        List<Unit> revisedUnitsList = new List<Unit>(this.occupyingUnits);
-        foreach (Unit unit in this.occupyingUnits) {
-            if (units.Contains(unit)) {
-                revisedUnitsList.Remove(unit);
+                /// Removes units from the city if they're being put on the road
+                List<Unit> revisedUnitsList = new List<Unit>(this.occupyingUnits);
+                foreach (Unit unit in this.occupyingUnits) {
+                    if (units.Contains(unit)) {
+                        revisedUnitsList.Remove(unit);
+                    }
+                }
+
+                this.occupyingUnits = revisedUnitsList;
             }
-        }
-        
-        this.occupyingUnits = revisedUnitsList;
+
+        }        
     }
 
     /// <summary>

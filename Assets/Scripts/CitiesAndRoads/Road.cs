@@ -40,13 +40,15 @@ public class Road : Place
 
         /// <summary>
         /// Decreases the number of turns by 1.
-        /// If the remaining turns to arrival gets to 0, returns the unit.
+        /// If the remaining turns to arrival gets to 0 or lower, returns the unit.
+        /// A unit might get to 0 or lower if they are not able be put into the destination
+        /// because it's occupied by a different civ.
         /// If there are remaining turns, return null.
         /// </summary>
-        public Unit progress(){
+        public Unit Progress(){
             turnsToArrival--;
 
-            if (turnsToArrival == 0){
+            if (turnsToArrival <= 0){
                 return unit;
             }
 
@@ -114,8 +116,8 @@ public class Road : Place
 
         // Loop over all units going towards the first city.
         foreach(TravellingUnit tUnit in unitsEnRouteTo[city1]){
-            Unit arrivedUnit = tUnit.progress();
-            if (arrivedUnit != null) {
+            Unit arrivedUnit = tUnit.Progress();
+            if (arrivedUnit != null && city1.CanPlace(arrivedUnit)) {
                 city1.AddOccupyingUnits(new List<Unit>(){ arrivedUnit });
             } else {
                 toCity1BackupUnitList.Add(tUnit);
@@ -131,15 +133,12 @@ public class Road : Place
         List<TravellingUnit> toCity2BackupUnitList = new List<TravellingUnit>();
 
         // Loop over all units going towards the second city.
-        foreach (TravellingUnit tUnit in unitsEnRouteTo[city2])
-        {
-            Unit arrivedUnit = tUnit.progress();
-            if (arrivedUnit != null)
-            {
+        foreach (TravellingUnit tUnit in unitsEnRouteTo[city2]) {
+            Unit arrivedUnit = tUnit.Progress();
+            if (arrivedUnit != null && city2.CanPlace(arrivedUnit)) {
                 city2.AddOccupyingUnits(new List<Unit>() { arrivedUnit });
             }
-            else
-            {
+            else {
                 toCity2BackupUnitList.Add(tUnit);
             }
         }
@@ -158,5 +157,22 @@ public class Road : Place
             units.Add(tUnit.unit);
         }
         return units;
+    }
+
+    public override bool CanPlace(Unit unit)
+    {
+        /// There are no units currently on the road
+        if (GetUnitsEnRouteTo(city1).Count == 0 && GetUnitsEnRouteTo(city2).Count == 0) {
+            return true;
+        } 
+        /// There are units going to the first city
+        else if (GetUnitsEnRouteTo(city1).Count > 0 ) {
+            return GetUnitsEnRouteTo(city1)[0].allegiance == unit.allegiance;
+        }
+        /// There are units going to the second city
+        else
+        {
+            return GetUnitsEnRouteTo(city2)[0].allegiance == unit.allegiance;
+        }
     }
 }
