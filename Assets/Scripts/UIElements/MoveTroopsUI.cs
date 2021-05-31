@@ -4,11 +4,11 @@ using UnityEngine.UI;
 
 public class MoveTroopsUI : MonoBehaviour
 {
-    public UnitsScrollview unitsScrollviewPrefab;
-    public GameObject unitsScrollviewLayout;
+    [SerializeField] private UnitsScrollview unitsScrollviewPrefab;
+    [SerializeField] private HorizontalLayoutGroup unitsScrollviewLayout;
 
-    public Button confirmButton;
-    public Button cancelButton;
+    [SerializeField] private Button confirmButton;
+    [SerializeField] private Button cancelButton;
 
     private List<ScrollviewCityPair> scrollviewCityPairs;
 

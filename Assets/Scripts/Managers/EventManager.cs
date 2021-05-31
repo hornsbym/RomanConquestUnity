@@ -10,6 +10,8 @@ public class EventManager : MonoBehaviour
     public delegate void voidEmptyDelegate();
     public delegate void voidCityDelegate(City city);
     public delegate void voidRoadDelegate(Road road);
+    public delegate void voidUnitDelegate(Unit unit);
+    public delegate void voidCombinedUnitDelegate<T>(T combinedUnit) where T : Unit;
 
     // Event declarations
     public static event voidEmptyDelegate OnTurnEnd;
@@ -22,7 +24,15 @@ public class EventManager : MonoBehaviour
     public static event voidCityDelegate OnUnitsChanged;
     public static event voidCityDelegate OnCombineSelected;
     public static event voidCityDelegate OnMoveUnitsSelected;
+    public static event voidCityDelegate OnAttackSelected;
     public static event voidCityDelegate OnCityActionConsumed;
+
+    public static event voidUnitDelegate OnUnitDiedEvent;
+
+    public static event voidCombinedUnitDelegate<Century> OnCenturyDisbanded;
+    public static event voidCombinedUnitDelegate<Cohort> OnCohortDisbanded;
+    public static event voidCombinedUnitDelegate<Legion> OnLegionDisbanded;
+
 
     void Start()
     {
@@ -78,5 +88,35 @@ public class EventManager : MonoBehaviour
     {
         Utilities.instance.Debug(city.placeName + " action used");
         OnCityActionConsumed?.Invoke(city);
+    }
+
+    public void fireUnitDiedEvent(Unit unit)
+    {
+        Utilities.instance.Debug(unit.unitName + " died");
+        OnUnitDiedEvent?.Invoke(unit);
+    }
+
+    public void fireCenturyDisbandedEvent(Century century)
+    {
+        Utilities.instance.Debug(century.unitName + " disbanded");
+        OnCenturyDisbanded?.Invoke(century);
+    }
+
+    public void fireCohortDisbandedEvent(Cohort cohort)
+    {
+        Utilities.instance.Debug(cohort.unitName + " disbanded");
+        OnCohortDisbanded?.Invoke(cohort);
+    }
+
+    public void fireLegionDisbandedEvent(Legion legion)
+    {
+        Utilities.instance.Debug(legion.unitName + " disbanded");
+        OnLegionDisbanded?.Invoke(legion);
+    }
+
+    public void fireAttackScreenSelectedEvent(City city) 
+    {
+        Utilities.instance.Debug("Attack action selected");
+        OnAttackSelected?.Invoke(city);
     }
 }

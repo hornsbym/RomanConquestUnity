@@ -838,6 +838,8 @@ MonoBehaviour:
     type: 3}
   moveUnitsUIPrefab: {fileID: 9112836130286407539, guid: 50803aeb2ba1204418ab05e4ec035470,
     type: 3}
+  attackUIPrefab: {fileID: 8253631161206608352, guid: 4593e3cd1878cbe4e9323a83f4545e21,
+    type: 3}
 --- !u!1 &1808886878
 GameObject:
   m_ObjectHideFlags: 0

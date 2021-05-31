@@ -1,16 +1,15 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ColorCityMarker : MonoBehaviour
 {   
-    public Material roman;
-    public Material independent;
-    public Material gallic;
+    [SerializeField] private Material roman;
+    [SerializeField] private Material independent;
+    [SerializeField] private Material gallic;
+    [SerializeField] private Material noAllegiance;
+
+    [SerializeField] private Material highlightedMaterial;
 
     private City city;
-
-    public Material highlightedMaterial;
 
     private bool isHighlighted {get; set;}
 
@@ -41,6 +40,9 @@ public class ColorCityMarker : MonoBehaviour
                     break;
                 case Allegiance.INDEPENDENT:
                     GetComponent<Renderer>().material = independent;
+                    break;
+                case Allegiance.NONE:
+                    GetComponent<Renderer>().material = noAllegiance;
                     break;
                 case Allegiance.GALLIC:
                     GetComponent<Renderer>().material = gallic;

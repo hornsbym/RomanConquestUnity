@@ -1,8 +1,8 @@
 ﻿public class PurchaseBuildingAction : Action
 {
-    private City city;
-    private Leader leader;
-    private Building building;
+    private City city { get; set; }
+    private Leader leader { get; set; }
+    private Building building { get; set; }
 
 
     public PurchaseBuildingAction(City city, Leader leader, Building building) {
@@ -28,7 +28,7 @@
         {
             return false;
         }
-        else if (city.allegiance != leader.allegiance)
+        else if (city.allegiance != leader.allegiance && city.allegiance != Allegiance.NONE)
         {
             return false;
         }

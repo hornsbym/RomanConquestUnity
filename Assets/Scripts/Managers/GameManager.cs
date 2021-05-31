@@ -36,7 +36,7 @@ public class GameManager : MonoBehaviour
         turnCount = 0;
 
         /// Start the first turn manually
-        // BeginTurn();
+        BeginTurn();
     }
 
 
@@ -62,6 +62,7 @@ public class GameManager : MonoBehaviour
         allegianceToLeaderMapping.Add(Allegiance.ROMAN, roman);
         allegianceToLeaderMapping.Add(Allegiance.GALLIC, gallic);
         allegianceToLeaderMapping.Add(Allegiance.INDEPENDENT, null);
+        allegianceToLeaderMapping.Add(Allegiance.NONE, null);
 
         emperors.Add(roman);
         emperors.Add(gallic);
@@ -90,12 +91,33 @@ public class GameManager : MonoBehaviour
             Utilities.instance.Debug(city.placeName + ": " + city.allegiance.ToString() + ", " + city.wealth + " wealth, " + city.taxRate + " tax rate, " + city.publicUnrest + " public unrest");
         }
 
-        Utilities.instance.Debug("***** Turn " + turnCount + " *****");
+        void PrintRoadInformation(Road road) 
+        {
+            Utilities.instance.Debug(road.placeName + ": " + road.travellingUnits.Count + " tUnits, " + road.occupyingUnits.Count + " units");
+        }
+
+        Utilities.instance.Debug("***** Turn " + this.turnCount + " *****");
         Utilities.instance.Debug(allegianceToLeaderMapping[Allegiance.ROMAN].gold + " Gold");
+
+        City rome = null;
+        City neapolis = null;
+
         foreach(City city in MapManager.instance.cities) 
         {
             PrintCityInformation(city);
+
+            if (city.placeName == "Rome") {
+                rome = city;
+            } else if (city.placeName == "Neapolis") {
+                neapolis = city;
+            }
+
         }
+
+        if (rome != null && neapolis != null) {
+            PrintRoadInformation(MapManager.instance.GetRoad(rome, neapolis));
+        }
+
         Utilities.instance.Debug("********************");
     }
 
@@ -106,7 +128,7 @@ public class GameManager : MonoBehaviour
     {
         foreach (Emperor leader in emperors)
         {
-            if ((leader.allegiance != playerAllegiance) && (leader.allegiance != Allegiance.INDEPENDENT)) {
+            if ((leader.allegiance != playerAllegiance) && (leader.allegiance != Allegiance.INDEPENDENT && leader.allegiance != Allegiance.NONE)) {
                 leader.TakeTurn();
             }
         }
@@ -118,7 +140,7 @@ public class GameManager : MonoBehaviour
     private void TakeGovernorTurns()
     {
         foreach (City city in MapManager.instance.cities) {
-            if (city.allegiance == Allegiance.INDEPENDENT) {
+            if (city.allegiance == Allegiance.INDEPENDENT || city.allegiance == Allegiance.NONE) {
                 city.governor.TakeTurn();
             }
         }

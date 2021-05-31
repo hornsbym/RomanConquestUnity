@@ -16,6 +16,28 @@ public abstract class Unit : MonoBehaviour, IUnit
     public virtual void TakeDamage(int damage) 
     {
         health -= damage;
+
+        // Kills the unit if health reaches 0
+        if (health <= 0) {
+            Die();
+        }
+    }
+
+    /// <summary>
+    /// Fires a unit died event using this unit as the payload.
+    /// </summary>
+    public virtual void Die() {
+        EventManager.instance.fireUnitDiedEvent(this);
+    }
+
+    /// <summary>
+    /// Returns a copy of the unit.
+    /// The copy != the original.
+    /// Useful for mocking turn actions (especially battle actions).
+    /// </summary>
+    public Unit GetCopy()
+    {
+        return (Unit) this.MemberwiseClone();
     }
 
 }

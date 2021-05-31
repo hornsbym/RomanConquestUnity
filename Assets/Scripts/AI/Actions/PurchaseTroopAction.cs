@@ -30,7 +30,7 @@
             {
                 return false;
             }
-            else if (city.allegiance != leader.allegiance)
+            else if (city.allegiance != leader.allegiance && city.allegiance != Allegiance.NONE)
             {
                 return false;
             }

@@ -5,20 +5,18 @@ using UnityEngine;
 /// <summary>
 /// General purpose class for displaying a list of game Units.
 /// </summary> 
-public class UnitsScrollview : MonoBehaviour
+public class TravellingUnitsScrollview : MonoBehaviour
 {   
     [SerializeField] private Text titleText;
     [SerializeField] private GameObject content;
-    [SerializeField] private GameObject unitTile;
+    [SerializeField] private TravellingUnitTile unitTile;
 
     public delegate void TileCallback (Unit unit);
-    private List<GameObject> unitTiles;
-    private List<Unit> units;
+    private List<TravellingUnitTile> tUnitTiles;
 
     void Awake()
     {
-        unitTiles = new List<GameObject>();
-        units = new List<Unit>();
+        tUnitTiles = new List<TravellingUnitTile>();
     }
 
     /// <summary>
@@ -35,15 +33,13 @@ public class UnitsScrollview : MonoBehaviour
     /// Accepts an optional function parameter that can be attached to each 
     /// tile so that the tiles can be made clickable.
     /// </summary>
-    public void SetContent(List<Unit> units, TileCallback callback = null)
+    public void SetContent(List<TravellingUnit> tUnits, TileCallback callback = null)
     {
         /// Removes any existing content
-        foreach(GameObject tile in unitTiles) {
-            Destroy(tile);
+        foreach(TravellingUnitTile tile in tUnitTiles) {
+            Destroy(tile.gameObject);
         }
-        unitTiles.Clear();
-
-        this.units = units;
+        tUnitTiles.Clear();
 
         /// Defaults the callback to an empty one if no
         /// callback is provided.
@@ -55,18 +51,13 @@ public class UnitsScrollview : MonoBehaviour
         }
 
         /// Create and add a new label for each unit.
-        foreach (Unit unit in units)
+        foreach (TravellingUnit tUnit in tUnits)
         {
-            GameObject unitTile = Instantiate(this.unitTile, content.GetComponent<RectTransform>(), false);
-            unitTiles.Add(unitTile);
-            unitTile.GetComponentInChildren<Text>().text = unit.unitName;
-            unitTile.GetComponent<Clickable>().SetCallbackDelegate(() => {unitCallback(unit);});
-            unitTile.transform.SetParent(content.GetComponent<RectTransform>());
-        }
-    }
+            TravellingUnitTile tUnitTile = Instantiate(this.unitTile, content.GetComponent<RectTransform>(), false);
+            tUnitTiles.Add(tUnitTile);
+            tUnitTile.Initialize(tUnit);
 
-    public List<Unit> GetUnits() 
-    {
-        return new List<Unit>(this.units);
+            tUnitTile.transform.SetParent(content.GetComponent<RectTransform>());
+        }
     }
 }

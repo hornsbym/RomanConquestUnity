@@ -1,11 +1,14 @@
 ﻿using UnityEngine.UI;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class SelectedRoadUI : MonoBehaviour
 {
-    public Text roadTitle;
-    public GameObject friendlyUnitsList;
-    public GameObject friendlyUnitDetails;
+    [SerializeField] private Text roadTitle;
+    [SerializeField] private TravellingUnitsScrollview tUnitScrollview;
+    [SerializeField] private UnitsScrollview city1CampedUnitsScrollview;
+    [SerializeField] private UnitsScrollview city2CampedUnitsScrollview;
+
 
     void Awake() 
     {
@@ -15,24 +18,22 @@ public class SelectedRoadUI : MonoBehaviour
     private void PopulateComponents(Road selectedRoad){
         /// Initialize city title
         roadTitle.text = selectedRoad.placeName;
-
-        /// Initialize UI components
-        // InitializeFriendlyUnitList(selectedRoad);
+        InitializeTravellingUnitScrollview(selectedRoad.travellingUnits);
+        InitializeCampedUnitsScrollviews(selectedRoad);
     }
 
-    // private void InitializeFriendlyUnitList(Road selectedRoad)
-    // {
-    //     /// Instantiate a new UnitScrollview widget 
-    //     UnitsScrollview scrollview = friendlyUnitsList.GetComponent<UnitsScrollview>();
+    private void InitializeTravellingUnitScrollview (List<TravellingUnit> tUnits) 
+    {
+        tUnitScrollview.AddTitle("Units in transit");
+        tUnitScrollview.SetContent(tUnits);
+    }
+    
+    private void InitializeCampedUnitsScrollviews(Road selectedRoad)
+    {
+        city1CampedUnitsScrollview.AddTitle("Camped outside " + selectedRoad.city1.placeName);
+        city1CampedUnitsScrollview.SetContent(selectedRoad.campedOutsideCity1);
 
-    //     /// Set the unit scrollview title.
-    //     scrollview.AddTitle("Friendly Units");
-
-    //     /// Add the units and provide logic for what should be done whenever the 
-    //     /// individual unit is clicked.
-    //     scrollview.SetContent(selectedRoad, (Unit u) =>
-    //     {
-    //         GameManager.instance.SelectUnit(u);
-    //     });
-    // }
+        city2CampedUnitsScrollview.AddTitle("Camped outside " + selectedRoad.city2.placeName);
+        city2CampedUnitsScrollview.SetContent(selectedRoad.campedOutsideCity2);
+    }
 }

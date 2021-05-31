@@ -12,17 +12,11 @@ public class City : Place
     // Tracks adjacent cities
     private List<Neighbor> neighbors { get; set; }
 
-    // Tracks units within the city
-    public List<Unit> occupyingUnits { get; private set; }
-
     // Governor in charge of controlling independent cities
     public Governor governor { get; set; }
 
     // Tracks which units the city can sell
     public List<TroopClassification> unitsForSale;
-
-    // Keeps track of who the city is allied with
-    public Allegiance allegiance { get; set; }
 
     // This is the maximum amount of money a city will produce per turn
     public int wealth { get; set; }
@@ -62,10 +56,11 @@ public class City : Place
     /// Called whenever the component is added to an object.
     void Awake() {
         neighbors = new List<Neighbor>();
-        occupyingUnits = new List<Unit>();
         buildings = new List<Building>();
         unitsForSale = new List<TroopClassification>();
         buildingsForPurchase = new List<Building>() { new Barracks(), new Range(), new Stables() };
+        occupyingUnits = new List<Unit>();
+        allegiance = Allegiance.NONE;
 
         buildingLimit = 3;
 
@@ -74,9 +69,34 @@ public class City : Place
         hasAction = true; 
     }
 
-    public override bool CanPlace(Unit unit)
+    override public void AddOccupyingUnits<T>(List<T> units)
     {
-        return unit.allegiance == this.allegiance;
+        occupyingUnits.AddRange(units);
+        EventManager.instance.fireUnitsChangedEvent(this);
+
+        /// Handles changing allegiances if friendly units are the only units in the city.
+        if (this.occupyingUnits.Count > 0)
+        {
+            ChangeAllegiance(occupyingUnits[0].allegiance);
+        }
+    }
+
+    override public void RemoveOccupyingUnits(List<Unit> units)
+    {
+        /// TODO: Is it necessary to destroy the game objects too?
+        List<Unit> revisedUnitsList = new List<Unit>(this.occupyingUnits);
+        foreach (Unit unit in this.occupyingUnits)
+        {
+            if (units.Contains(unit))
+            {
+                revisedUnitsList.Remove(unit);
+            }
+        }
+
+        this.occupyingUnits = revisedUnitsList;
+
+        /// Send an event informing the rest of the game that the units have changed.
+        EventManager.instance.fireUnitsChangedEvent(this);
     }
 
     /// <summary>
@@ -106,7 +126,7 @@ public class City : Place
 
         /// Independent cities give their taxes directly to the governor
         /// And don't calculate public unrest or revolt
-        if (this.allegiance != Allegiance.INDEPENDENT) {
+        if (this.allegiance != Allegiance.INDEPENDENT && this.allegiance != Allegiance.NONE) {
             /// Check if the city should revolt
             float chance = UnityEngine.Random.Range(0f, 1f);
             if (publicUnrest > chance) {
@@ -179,6 +199,18 @@ public class City : Place
     }
 
     /// <summary>
+    /// Get a list of the roads connected to the city.
+    /// </summary>
+    public List<Road> GetConnectedRoads()
+    {   
+        List<Road> roads = new List<Road>();
+        foreach (Neighbor neighbor in neighbors){
+            roads.Add(MapManager.instance.GetRoad(this, neighbor.city));
+        }
+        return roads;
+    }
+
+    /// <summary>
     /// Sends a group of units on the road to a neighboring city.
     /// </summary>
     public void SendFriendlyUnitsToNeighbor(List<Unit> units, City city) {
@@ -186,9 +218,7 @@ public class City : Place
 
         if (units.Count > 0) {
             if (roadToNeighbor.CanPlace(units[0])) {
-                foreach (Unit unit in units) {
-                    roadToNeighbor.PutUnitOnRoad(unit, this);
-                }
+                roadToNeighbor.PutUnitsOnRoad(units, this);
 
                 /// Removes units from the city if they're being put on the road
                 List<Unit> revisedUnitsList = new List<Unit>(this.occupyingUnits);
@@ -200,7 +230,6 @@ public class City : Place
 
                 this.occupyingUnits = revisedUnitsList;
             }
-
         }        
     }
 
@@ -233,41 +262,6 @@ public class City : Place
     {
         this.allegiance = newAllegiance;
         EventManager.instance.fireSelectedCityUpdatedEvent(this);
-    }
-
-    /// <summary>
-    /// Adds the provided unit to the city's list of units.
-    /// </summary>
-    public void AddOccupyingUnits<T>(List<T> units) where T : Unit
-    {   
-        occupyingUnits.AddRange(units);
-        EventManager.instance.fireUnitsChangedEvent(this);
-
-        /// Handles changing allegiances if friendly units are the only units in the city.
-        if (this.occupyingUnits.Count > 0) {
-            ChangeAllegiance(occupyingUnits[0].allegiance);
-        }
-    }
-
-    /// <summary>
-    /// Remove the list of units from the city's friendly units.
-    /// </summary>
-    public void RemoveOccupyingUnits<T>(List<T> units) where T : Unit
-    {        
-        /// TODO: Is it necessary to destroy the game objects too?
-        List<Unit> revisedUnitsList = new List<Unit>(this.occupyingUnits);
-        foreach (Unit unit in this.occupyingUnits)
-        {
-            if (units.Contains(unit))
-            {
-                revisedUnitsList.Remove(unit);
-            }
-        }
-
-        this.occupyingUnits = revisedUnitsList;
-
-        /// Send an event informing the rest of the game that the units have changed.
-        EventManager.instance.fireUnitsChangedEvent(this);
     }
 
     /// <summary>

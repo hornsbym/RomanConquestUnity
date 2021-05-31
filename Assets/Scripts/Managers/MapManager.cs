@@ -10,6 +10,7 @@ public class MapManager : MonoBehaviour
     public GameObject roadMarkerPrefab;
 
     // TODO: Do I need to keep a reference to these?
+    // For now, will keep for debugging purposes
     public List<City> cities;
     public Dictionary<City, Dictionary<City, Road>> roads;
 
@@ -40,19 +41,19 @@ public class MapManager : MonoBehaviour
     private void InitializeCities()
     {
         /// Create the cities and city map markers here.
-        City rome = SpawnCityMarker("Rome", new Vector3(.91f, -4.15f, 0f), Allegiance.ROMAN, 20, new List<Building> { new Barracks() })
+        City rome = SpawnCityMarker("Rome", new Vector3(.91f, -4.15f, 0f), 20, new List<Building> { new Barracks() }, Allegiance.ROMAN)
             .GetComponent<City>();
-        City arretium = SpawnCityMarker("Arretium", new Vector3(.55f, -3.65f, 0f), Allegiance.INDEPENDENT, 10)
+        City arretium = SpawnCityMarker("Arretium", new Vector3(.55f, -3.65f, 0f), 10)
             .GetComponent<City>();
-        City neapolis = SpawnCityMarker("Neapolis", new Vector3(1.39f, -4.45f, 0f), Allegiance.INDEPENDENT, 10)
+        City neapolis = SpawnCityMarker("Neapolis", new Vector3(1.39f, -4.45f, 0f), 10)
             .GetComponent<City>();
-        City genua = SpawnCityMarker("Genua", new Vector3(-.1f, -3.23f, 0f), Allegiance.INDEPENDENT, 10)
+        City genua = SpawnCityMarker("Genua", new Vector3(-.1f, -3.23f, 0f), 10)
             .GetComponent<City>();
-        City vienne = SpawnCityMarker("Vienne", new Vector3(-.8f, -2.9f, 0f), Allegiance.INDEPENDENT, 10, new List<Building>() { new Range() })
+        City vienne = SpawnCityMarker("Vienne", new Vector3(-.8f, -2.9f, 0f), 10)
             .GetComponent<City>();
-        City aventicum = SpawnCityMarker("Aventicum", new Vector3(-.51f, -2.24f, 0f), Allegiance.INDEPENDENT, 10)
+        City aventicum = SpawnCityMarker("Aventicum", new Vector3(-.51f, -2.24f, 0f), 10)
             .GetComponent<City>();
-        City cenabum = SpawnCityMarker("Cenabum", new Vector3(-2.03f, -1.97f, 0f), Allegiance.GALLIC, 20, new List<Building> { new Stables() })
+        City cenabum = SpawnCityMarker("Cenabum", new Vector3(-2.03f, -1.97f, 0f), 20, new List<Building> { new Stables() }, Allegiance.GALLIC)
             .GetComponent<City>();
             
         
@@ -85,8 +86,9 @@ public class MapManager : MonoBehaviour
     /// Instantiates a city marker and returns a reference to it.
     /// The "real" data is maintained in the marker's "City" component, which is also created here.
     /// </summary>
-    public GameObject SpawnCityMarker(string cityName, Vector3 cityPosition, Allegiance allegiance, int wealth, List<Building> startingBuildings = null)
+    public GameObject SpawnCityMarker(string cityName, Vector3 cityPosition, int wealth, List<Building> startingBuildings = null, Allegiance allegiance = Allegiance.NONE)
     {
+        // TODO: Set allegiances to NONE by default
         GameObject marker = (GameObject) Instantiate(cityMarkerPrefab, cityPosition, Quaternion.identity);
         City city = marker.AddComponent<City>();
         city.placeName = cityName;

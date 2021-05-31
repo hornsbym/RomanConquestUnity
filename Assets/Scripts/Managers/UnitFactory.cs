@@ -13,7 +13,7 @@ public class UnitFactory : MonoBehaviour
     /// easily accessed later
     private Dictionary<Allegiance, Dictionary<TroopClassification, int>> troopCounts;
 
-    void Start()
+    void Awake()
     {
         instance = this;
         InitializeTroopCounts();

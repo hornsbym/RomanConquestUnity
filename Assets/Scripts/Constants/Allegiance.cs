@@ -4,6 +4,7 @@ using UnityEngine;
 
 public enum Allegiance 
 {
+    NONE,
     ROMAN,
     INDEPENDENT,
     GALLIC

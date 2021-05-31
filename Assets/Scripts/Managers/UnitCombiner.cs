@@ -42,7 +42,7 @@ public class UnitCombiner : MonoBehaviour
             centuryCount++;
             Century century = Instantiate(emptyUnitPrefab).AddComponent<Century>();
             century.unitName = Utilities.instance.CountToOrdinal(centuryCount) + " Century";
-            century.SetUnits(troops);
+            century.units = troops;
 
             foreach (Troop troop in troops) 
             {
@@ -70,7 +70,7 @@ public class UnitCombiner : MonoBehaviour
             cohortCount++;
             Cohort cohort = Instantiate(emptyUnitPrefab).AddComponent<Cohort>();
             cohort.unitName = Utilities.instance.CountToOrdinal(cohortCount) + " Cohort";
-            cohort.SetUnits(centuries);
+            cohort.units = centuries;
 
             foreach (Century century in centuries)
             {
@@ -101,7 +101,7 @@ public class UnitCombiner : MonoBehaviour
             legionCount++;
             Legion legion = Instantiate(emptyUnitPrefab).AddComponent<Legion>();
             legion.unitName = Utilities.instance.CountToOrdinal(legionCount) + " Legion";
-            legion.SetUnits(cohorts);
+            legion.units = cohorts;
 
             foreach (Cohort cohort in cohorts)
             {

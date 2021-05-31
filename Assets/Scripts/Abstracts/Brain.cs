@@ -5,8 +5,7 @@ public abstract class Brain
     /// <summary>
     /// Executes all game actions the AI has chosen.
     /// </summary>
-    public void TakeTurn() 
-    {
+    public void TakeTurn() {
         // Create all possible actions
         List<Action> actions = CreatePossibleActionsList();
 
