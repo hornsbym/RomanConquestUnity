@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class MapManager : MonoBehaviour
@@ -11,6 +10,7 @@ public class MapManager : MonoBehaviour
     public GameObject roadMarkerPrefab;
 
     // TODO: Do I need to keep a reference to these?
+    // For now, will keep for debugging purposes
     public List<City> cities;
     public Dictionary<City, Dictionary<City, Road>> roads;
 
@@ -41,24 +41,31 @@ public class MapManager : MonoBehaviour
     private void InitializeCities()
     {
         /// Create the cities and city map markers here.
-        City rome = SpawnCityMarker("Rome", new Vector3(.91f, -4.15f, 0f), 
-            new TroopClassifications[] { TroopClassifications.INFANTRY, TroopClassifications.RANGED })
+        City rome = SpawnCityMarker("Rome", new Vector3(.91f, -4.15f, 0f), 20, new List<Building> { new Barracks() }, Allegiance.ROMAN)
             .GetComponent<City>();
-        City florence = SpawnCityMarker("Florence", new Vector3(.55f, -3.65f, 0f), 
-            new TroopClassifications[] { TroopClassifications.INFANTRY, TroopClassifications.CAVALRY })
+        City arretium = SpawnCityMarker("Arretium", new Vector3(.55f, -3.65f, 0f), 10)
             .GetComponent<City>();
-        City naples = SpawnCityMarker("Naples", new Vector3(1.39f, -4.45f, 0f), 
-            new TroopClassifications[] { TroopClassifications.RANGED })
+        City neapolis = SpawnCityMarker("Neapolis", new Vector3(1.39f, -4.45f, 0f), 10)
             .GetComponent<City>();
+        City genua = SpawnCityMarker("Genua", new Vector3(-.1f, -3.23f, 0f), 10)
+            .GetComponent<City>();
+        City vienne = SpawnCityMarker("Vienne", new Vector3(-.8f, -2.9f, 0f), 10)
+            .GetComponent<City>();
+        City aventicum = SpawnCityMarker("Aventicum", new Vector3(-.51f, -2.24f, 0f), 10)
+            .GetComponent<City>();
+        City cenabum = SpawnCityMarker("Cenabum", new Vector3(-2.03f, -1.97f, 0f), 20, new List<Building> { new Stables() }, Allegiance.GALLIC)
+            .GetComponent<City>();
+            
         
         /// Connect the cities by declaring neighbors.
         /// Road objects will be build automatically based on this data.
-        /// How do we keep from getting duplicate roads? Iterate over all existing roads
-        /// and making sure none already exist from one to the next
-        rome.AddNeighbor(florence, 1);
-        rome.AddNeighbor(naples, 1);
-        florence.AddNeighbor(rome, 1);
-        naples.AddNeighbor(rome, 1);
+        RecordNeighbors(rome, arretium, 1);
+        RecordNeighbors(rome, neapolis, 1);
+        RecordNeighbors(arretium, genua, 2);
+        RecordNeighbors(genua, arretium, 2);
+        RecordNeighbors(genua, vienne, 2);
+        RecordNeighbors(vienne, aventicum, 3);
+        RecordNeighbors(vienne, cenabum, 5);
 
         // Connect the cities with roads
         foreach(City city in cities){
@@ -67,15 +74,33 @@ public class MapManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Record each city as neighbors to one another.
+    /// </summary>
+    private void RecordNeighbors(City city1, City city2, int distance) 
+    {
+        city1.AddNeighbor(city2, distance);
+        city2.AddNeighbor(city1, distance);
+    }
+
+    /// <summary>
     /// Instantiates a city marker and returns a reference to it.
     /// The "real" data is maintained in the marker's "City" component, which is also created here.
     /// </summary>
-    public GameObject SpawnCityMarker(string cityName, Vector3 cityPosition, TroopClassifications[] troopsForSale)
+    public GameObject SpawnCityMarker(string cityName, Vector3 cityPosition, int wealth, List<Building> startingBuildings = null, Allegiance allegiance = Allegiance.NONE)
     {
+        // TODO: Set allegiances to NONE by default
         GameObject marker = (GameObject) Instantiate(cityMarkerPrefab, cityPosition, Quaternion.identity);
         City city = marker.AddComponent<City>();
         city.placeName = cityName;
-        city.unitsForSale = troopsForSale;
+        city.allegiance = allegiance;
+        city.wealth = wealth;
+        city.governor = new Governor(city.placeName + " Governor", city, AIStrategy.DEFAULT);
+
+        if (startingBuildings != null) {
+            foreach (Building building in startingBuildings) {
+                city.AddBuilding(building);
+            }
+        }
 
         /// Keep track of the city in an array.
         /// Why? For connecting the cities with roads.

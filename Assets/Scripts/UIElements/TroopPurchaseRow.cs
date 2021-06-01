@@ -4,67 +4,35 @@ using UnityEngine;
 public class TroopPurchaseRow : MonoBehaviour
 {
     public Button purchaseButton;
-    public InputField quantityInput;
 
-    TroopClassifications classification;
-
-    private City currentCity;
-
-    void Awake() {
-        EventManager.OnCitySelected += setCurrentCity;
-    }
-
-    private void setCurrentCity(City city) 
-    {
-        this.currentCity = city;
-    }
+    TroopClassification classification;
 
     /// <summary>
     /// Adds text to the button.
     /// Adds on-click functionality to the purchase button.
     /// </summary>
-    public void Initialize(TroopClassifications spawnClass)
+    public void Initialize(TroopClassification spawnClass, City city)
     {
         classification = spawnClass;
-        CreateButtonFromSpawnClass();
+        CreateButtonFromSpawnClass(city);
     }
 
-    private void CreateButtonFromSpawnClass()
+    private void CreateButtonFromSpawnClass(City city)
     {
-        switch (classification)
-        {
-            case TroopClassifications.INFANTRY:
-                purchaseButton.onClick.AddListener(() => {
-                    int numTroops = int.Parse(quantityInput.GetComponentInChildren<Text>().text);
-                    for(int i = 0; i < numTroops; i++) {
-                        GameManager.instance.currentCity.AddUnit(UnitFactory.instance.GenerateInfantry());
-                    }
-                    quantityInput.text = "1";
-                });
-                purchaseButton.GetComponentInChildren<Text>().text = "Infantry";
-                break;
-            case TroopClassifications.RANGED:
-                purchaseButton.onClick.AddListener(() => {
-                    int numTroops = int.Parse(quantityInput.GetComponentInChildren<Text>().text);
-                    for (int i = 0; i < numTroops; i++)
-                    {
-                        GameManager.instance.currentCity.AddUnit(UnitFactory.instance.GenerateRanged());
-                    }
-                    quantityInput.text = "1";
-                });
-                purchaseButton.GetComponentInChildren<Text>().text = "Ranged";
-                break;
-            case TroopClassifications.CAVALRY:
-                purchaseButton.onClick.AddListener(() => {
-                    int numTroops = int.Parse(quantityInput.GetComponentInChildren<Text>().text);
-                    for (int i = 0; i < numTroops; i++)
-                    {
-                        GameManager.instance.currentCity.AddUnit(UnitFactory.instance.GenerateCavalry());
-                    }
-                    quantityInput.text = "1";
-                });
-                purchaseButton.GetComponentInChildren<Text>().text = "Cavalry";
-                break;
+        purchaseButton.GetComponentInChildren<Text>().text = Utilities.instance.UppercaseFirstLetter(classification.ToString());
+
+        // Deactivate purchase button if the player doesn't have enough gold to buy the troop 
+        // or if the city has already performed an action
+        if (GameManager.instance.GetPlayerLeader().gold < TroopStats.statLedger[classification][Stat.COST]) {
+            purchaseButton.interactable = false;
+        } else {
+            purchaseButton.onClick.AddListener(() =>
+            {
+                GameManager.instance.GetPlayerLeader().PurchaseTroop(classification, city);
+            });
+
+            purchaseButton.interactable = city.hasAction;
         }
+
     }
 }

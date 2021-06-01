@@ -3,23 +3,17 @@ using System.Collections.Generic;
 
 abstract public class CombinedUnit<T>: Unit where T : Unit 
 {
+    public float cohesion { get; private set; }
+
     /// Automatically calculate stats anytime the units are set.
     private List<T> _units;
-
-    /// Units getter.
-    public List<T> GetUnits()
-    {
-        return this._units;
-    } 
-
-    /// Units setter.
-    /// Calculates stats whenever units are set.
-    public void SetUnits(List<T> value) {
-        this._units = value;
-        this.CalculateStats();
+    public List<T> units { 
+        get => _units; 
+        set {
+            this._units = value;
+            this.CalculateStats();
+        }
     }
-
-    public float cohesion;
 
     void Awake() {
         cohesion = 1f;
@@ -47,7 +41,7 @@ abstract public class CombinedUnit<T>: Unit where T : Unit
         // Reset the stats for the combined unit.
         ZeroStats();
 
-        if (this.GetUnits().Count > 0) {
+        if (units.Count > 0) {
             CalculateHealth();
             CalculateMelee();
             CalculateRanged();
@@ -62,7 +56,7 @@ abstract public class CombinedUnit<T>: Unit where T : Unit
     /// </summary>
     private void CalculateHealth() 
     {
-        foreach (Unit unit in this.GetUnits()) 
+        foreach (Unit unit in units) 
         {
             this.health += unit.health;
         }
@@ -76,7 +70,7 @@ abstract public class CombinedUnit<T>: Unit where T : Unit
     /// </summary>
     private void CalculateMelee() 
     {
-        foreach (Unit unit in this.GetUnits()) 
+        foreach (Unit unit in units) 
         {
             this.melee += unit.melee;
         }
@@ -90,7 +84,7 @@ abstract public class CombinedUnit<T>: Unit where T : Unit
     /// </summary>
     private void CalculateRanged()
     {
-        foreach (Unit unit in this.GetUnits())
+        foreach (Unit unit in units)
         {
             this.ranged += unit.ranged;
         }
@@ -104,7 +98,7 @@ abstract public class CombinedUnit<T>: Unit where T : Unit
     /// </summary>
     private void CalculateDefense()
     {
-        foreach (Unit unit in this.GetUnits())
+        foreach (Unit unit in units)
         {
             this.defense += unit.defense;
         }
@@ -117,14 +111,13 @@ abstract public class CombinedUnit<T>: Unit where T : Unit
     /// </summary>
     private void CalculateMovement()
     {
-        foreach (Unit unit in this.GetUnits())
+        foreach (Unit unit in units)
         {
             this.movement += unit.movement;
         }
 
-        this.movement = this.movement/GetUnits().Count;
+        this.movement = this.movement/units.Count;
     }
-
     
     /// <summary>
     /// Overrides the "TakeDamage" method of the Unit base class.
@@ -134,7 +127,7 @@ abstract public class CombinedUnit<T>: Unit where T : Unit
     override public void TakeDamage(int damage)
     {
         // Calculate damage each unit should take.
-        float exactDamagePerUnit = (float) damage / GetUnits().Count;
+        float exactDamagePerUnit = (float) damage / units.Count;
 
         // Separate the integer and decimal components of the damage each 
         // unit should take.
@@ -142,17 +135,30 @@ abstract public class CombinedUnit<T>: Unit where T : Unit
         float decimalDamage =  exactDamagePerUnit - integerDamage;
 
         // Give each unit its fair share of damage
-        foreach (Unit unit in GetUnits()) 
+        foreach (Unit unit in units) 
         {
             unit.TakeDamage(integerDamage);
         }
 
         // Randomly applies the leftover damage.
-        int leftoverDamage = (int) (decimalDamage * GetUnits().Count);
+        int leftoverDamage = (int) (decimalDamage * units.Count);
         for(int i = 0; i < leftoverDamage; i++) 
         {
             System.Random random = new System.Random();
-            GetUnits()[random.Next(GetUnits().Count)].TakeDamage(1);
+           units[random.Next(units.Count)].TakeDamage(1);
         }
     }
+
+    /// <summary>
+    /// Combined units can't die, they're disbanded instead.
+    /// Prefer using Disband() method for clarity.
+    /// </summary>
+    public override void Die() {
+        this.Disband();
+    }
+
+    /// <summary>
+    /// Fires a disband event using this combined unit as a payload. 
+    /// <summary>
+    public abstract void Disband();
 }

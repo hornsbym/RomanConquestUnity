@@ -1,93 +1,57 @@
-﻿using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class UnitFactory: MonoBehaviour
-{   
+public class UnitFactory : MonoBehaviour
+{
 
     public static UnitFactory instance;
 
-    public GameObject emptyUnitPrefab;
+    [SerializeField] private GameObject emptyUnitPrefab;
 
-    private int infantryCount = 0;
-    private int rangedCount = 0;
-    private int cavalryCount = 0;
+    /// Organize counts by clasification and allegiance so they can be 
+    /// easily accessed later
+    private Dictionary<Allegiance, Dictionary<TroopClassification, int>> troopCounts;
 
-    void Start() {
+    void Awake()
+    {
         instance = this;
+        InitializeTroopCounts();
+    }
+
+    private void InitializeTroopCounts()
+    {
+        troopCounts = new Dictionary<Allegiance, Dictionary<TroopClassification, int>>();
+
+        foreach (Allegiance allegiance in Enum.GetValues(typeof(Allegiance)))
+        {
+            Dictionary<TroopClassification, int> allegianceTroops = new Dictionary<TroopClassification, int>();
+
+            foreach(TroopClassification troopClass in Enum.GetValues(typeof(TroopClassification))) {
+                allegianceTroops.Add(troopClass, 0);
+            }
+
+            troopCounts.Add(allegiance, allegianceTroops);
+        }
     }
 
     /// <summary>
     /// Instantiates a new game object with an attached Troop script.
     /// Returns the Troop object in that script.
     /// </summary>
-    public Troop GenerateInfantry() {
-        infantryCount++;
-        Troop troop = GameObject.Instantiate(emptyUnitPrefab).AddComponent<Troop>();
-        troop.unitName = $"{countToOrdinal(infantryCount)} Infantry";
-        troop.InitializeTroop(TroopClassifications.INFANTRY);
-        return troop;
-    }
-
-    /// <summary>
-    /// Instantiates a new game object with an attached Ranged script.
-    /// Returns the Ranged object in that script.
-    /// </summary>
-    public Troop GenerateRanged()
+    public List<Troop> GenerateTroop(TroopClassification classification, Allegiance allegiance)
     {
-        rangedCount++;
+        /// Increment the Allegiance's troop count 
+        troopCounts[allegiance][classification] = troopCounts[allegiance][classification] + 1;
+
+        // Create an empty troop game object
         Troop troop = GameObject.Instantiate(emptyUnitPrefab).AddComponent<Troop>();
-        troop.unitName = $"{countToOrdinal(rangedCount)} Ranged";
-        troop.InitializeTroop(TroopClassifications.RANGED);
-        return troop;
-    }
+        troop.unitName = $"{Utilities.instance.CountToOrdinal(troopCounts[allegiance][classification])}" + 
+            $" {Utilities.instance.UppercaseFirstLetter(allegiance.ToString())}" + 
+            $" {Utilities.instance.UppercaseFirstLetter(classification.ToString())}";
 
-    /// <summary>
-    /// Instantiates a new game object with an attached Cavalry script.
-    /// Returns the Cavalry object in that script.
-    /// </summary>
-    public Troop GenerateCavalry()
-    {
-        cavalryCount++;
-        Troop troop = GameObject.Instantiate(emptyUnitPrefab).AddComponent<Troop>();
-        troop.unitName = $"{countToOrdinal(cavalryCount)} Cavalry";
-        troop.InitializeTroop(TroopClassifications.CAVALRY);
-        return troop;
-    }
+        troop.InitializeTroop(classification, allegiance);
 
-    /// <summary>
-    /// Creates an ordinal number from an integer.
-    /// Used for naming units.
-    /// </summary>
-    public static string countToOrdinal(int count) {
-        string stringCount = count.ToString();
-        char lastLetter = stringCount[stringCount.Length - 1];
-
-        // Handles any x11, x12, x13
-        if (stringCount.Length > 1) {
-            char secondToLastLetter = stringCount[stringCount.Length - 2];
-            if (secondToLastLetter == '1'){
-                stringCount += "th";
-                return stringCount;
-            }
-        }
-
-        // Handles anything else
-        switch(lastLetter){
-            case '1':
-                stringCount += "st";
-                break;
-            case '2':
-                stringCount += "nd";
-                break;
-            case '3':
-                stringCount += "rd";
-                break;
-            default:
-                stringCount += "th";
-                break;
-        }
-
-        return stringCount;
+        return new List<Troop>(){ troop };
     }
 }

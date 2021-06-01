@@ -7,11 +7,11 @@ using UnityEngine;
 /// </summary> 
 public class UnitsScrollview : MonoBehaviour
 {   
-    public Text titleText;
-    public GameObject content;
-    public GameObject unitTile;
+    [SerializeField] private Text titleText;
+    [SerializeField] private GameObject content;
+    [SerializeField] private GameObject unitTile;
 
-    public delegate void TileCallback(Unit unit);
+    public delegate void TileCallback (Unit unit);
     private List<GameObject> unitTiles;
     private List<Unit> units;
 
@@ -38,8 +38,7 @@ public class UnitsScrollview : MonoBehaviour
     public void SetContent(List<Unit> units, TileCallback callback = null)
     {
         /// Removes any existing content
-        foreach(GameObject tile in unitTiles) 
-        {
+        foreach(GameObject tile in unitTiles) {
             Destroy(tile);
         }
         unitTiles.Clear();
@@ -62,14 +61,12 @@ public class UnitsScrollview : MonoBehaviour
             unitTiles.Add(unitTile);
             unitTile.GetComponentInChildren<Text>().text = unit.unitName;
             unitTile.GetComponent<Clickable>().SetCallbackDelegate(() => {unitCallback(unit);});
-            UnitListing listing = unitTile.AddComponent<UnitListing>();
-            listing.unit = unit;
             unitTile.transform.SetParent(content.GetComponent<RectTransform>());
         }
     }
 
     public List<Unit> GetUnits() 
     {
-        return this.units;
+        return new List<Unit>(this.units);
     }
 }

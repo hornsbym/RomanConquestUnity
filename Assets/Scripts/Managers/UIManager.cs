@@ -8,11 +8,12 @@ public class UIManager : MonoBehaviour
 
     // Contains the various UIs that can be created.
     // Each will contain their own draw logic.
-    public Canvas defaultUIPrefab;
-    public Canvas selectedCityUIPrefab;
-    public Canvas selectedRoadUIPrefab;
-    public Canvas combineUnitsUIPrefab;
-    public Canvas moveUnitsUIPrefab;
+    [SerializeField] private Canvas defaultUIPrefab;
+    [SerializeField] private Canvas selectedCityUIPrefab;
+    [SerializeField] private Canvas selectedRoadUIPrefab;
+    [SerializeField] private Canvas combineUnitsUIPrefab;
+    [SerializeField] private Canvas moveUnitsUIPrefab;
+    [SerializeField] private Canvas attackUIPrefab;
 
     // Track the instantiated UIs here
     private Canvas defaultUI;
@@ -20,15 +21,17 @@ public class UIManager : MonoBehaviour
     private Canvas selectedRoadUI;
     private Canvas combineUnitsUI;
     private Canvas moveUnitsUI;
+    private Canvas attackUI;
 
     void Awake()
     {
         EventManager.OnDefaultSelected += ActivateDefaultUI;
-        EventManager.OnCitySelected += ActivateSelectedCityUI;
-        EventManager.OnRoadSelected += ActivateSelectedRoadUI;
+        EventManager.OnSelectedCityUpdated += ActivateSelectedCityUI;
+        EventManager.OnSelectedRoadUpdatedEvent += ActivateSelectedRoadUI;
         EventManager.OnTurnEnd += ActivateDefaultUI;
         EventManager.OnCombineSelected += ActivateCombineUnitsUI;
         EventManager.OnMoveUnitsSelected += ActivateMoveUnitsUI;
+        EventManager.OnAttackSelected += ActivateAttackUI;
     }
 
 
@@ -42,6 +45,7 @@ public class UIManager : MonoBehaviour
         selectedRoadUI = Instantiate(selectedRoadUIPrefab, Vector3.zero, Quaternion.identity);
         combineUnitsUI = Instantiate(combineUnitsUIPrefab, Vector3.zero, Quaternion.identity);
         moveUnitsUI = Instantiate(moveUnitsUIPrefab, Vector3.zero, Quaternion.identity);
+        attackUI = Instantiate(attackUIPrefab, Vector3.zero, Quaternion.identity);
 
         ActivateDefaultUI();
     }
@@ -76,6 +80,11 @@ public class UIManager : MonoBehaviour
         moveUnitsUI.gameObject.SetActive(true);
     }
 
+    void ActivateAttackUI(City city) {
+        DeactivateAllUIs();
+        attackUI.gameObject.SetActive(true);
+    }
+
     void DeactivateAllUIs() 
     {
         defaultUI.gameObject.SetActive(false);
@@ -83,5 +92,6 @@ public class UIManager : MonoBehaviour
         selectedRoadUI.gameObject.SetActive(false);
         combineUnitsUI.gameObject.SetActive(false);
         moveUnitsUI.gameObject.SetActive(false);
+        attackUI.gameObject.SetActive(false);
     }
 }

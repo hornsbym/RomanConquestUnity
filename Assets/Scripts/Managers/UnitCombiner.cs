@@ -11,7 +11,7 @@ public class UnitCombiner : MonoBehaviour
     private int cohortCount;
     private int legionCount;
 
-    public City currentCity;
+    private City currentCity;
 
     void Awake() 
     {
@@ -41,15 +41,15 @@ public class UnitCombiner : MonoBehaviour
         {
             centuryCount++;
             Century century = Instantiate(emptyUnitPrefab).AddComponent<Century>();
-            century.unitName = UnitFactory.countToOrdinal(centuryCount) + " Century";
-            century.SetUnits(troops);
+            century.unitName = Utilities.instance.CountToOrdinal(centuryCount) + " Century";
+            century.units = troops;
 
             foreach (Troop troop in troops) 
             {
-                currentCity.friendlyUnits.Remove(troop);
+                currentCity.occupyingUnits.Remove(troop);
             }
 
-            currentCity.AddUnit(century);
+            currentCity.AddOccupyingUnits(new List<Unit>(){century});
             
             return century;
         } else {
@@ -69,15 +69,15 @@ public class UnitCombiner : MonoBehaviour
         && centuries.Count <= CombinedUnitConstants.COHORT_SIZE_UPPER_BOUND){
             cohortCount++;
             Cohort cohort = Instantiate(emptyUnitPrefab).AddComponent<Cohort>();
-            cohort.unitName = UnitFactory.countToOrdinal(cohortCount) + " Cohort";
-            cohort.SetUnits(centuries);
+            cohort.unitName = Utilities.instance.CountToOrdinal(cohortCount) + " Cohort";
+            cohort.units = centuries;
 
             foreach (Century century in centuries)
             {
-                currentCity.friendlyUnits.Remove(century);
+                currentCity.occupyingUnits.Remove(century);
             }
 
-            currentCity.AddUnit(cohort);
+            currentCity.AddOccupyingUnits(new List<Unit>(){cohort});
 
             return cohort;
         }
@@ -100,15 +100,15 @@ public class UnitCombiner : MonoBehaviour
         {
             legionCount++;
             Legion legion = Instantiate(emptyUnitPrefab).AddComponent<Legion>();
-            legion.unitName = UnitFactory.countToOrdinal(legionCount) + " Legion";
-            legion.SetUnits(cohorts);
+            legion.unitName = Utilities.instance.CountToOrdinal(legionCount) + " Legion";
+            legion.units = cohorts;
 
             foreach (Cohort cohort in cohorts)
             {
-                currentCity.friendlyUnits.Remove(cohort);
+                currentCity.occupyingUnits.Remove(cohort);
             }
 
-            currentCity.AddUnit(legion);
+            currentCity.AddOccupyingUnits(new List<Unit>(){ legion });
 
             return legion;
         }

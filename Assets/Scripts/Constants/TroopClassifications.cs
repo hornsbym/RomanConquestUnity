@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum TroopClassifications
+public enum TroopClassification
 {
     INFANTRY,
     RANGED,

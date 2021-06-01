@@ -4,11 +4,11 @@ using UnityEngine.UI;
 
 public class MoveTroopsUI : MonoBehaviour
 {
-    public UnitsScrollview unitsScrollviewPrefab;
-    public GameObject unitsScrollviewLayout;
+    [SerializeField] private UnitsScrollview unitsScrollviewPrefab;
+    [SerializeField] private HorizontalLayoutGroup unitsScrollviewLayout;
 
-    public Button confirmButton;
-    public Button cancelButton;
+    [SerializeField] private Button confirmButton;
+    [SerializeField] private Button cancelButton;
 
     private List<ScrollviewCityPair> scrollviewCityPairs;
 
@@ -17,8 +17,7 @@ public class MoveTroopsUI : MonoBehaviour
     void Awake()
     {
         scrollviewCityPairs = new List<ScrollviewCityPair>();
-        EventManager.OnCitySelected += AddNeighboringCityScrollviews;
-        EventManager.OnUnitAdded += AddNeighboringCityScrollviews;
+        EventManager.OnSelectedCityUpdated += AddNeighboringCityScrollviews;
         EventManager.OnMoveUnitsSelected += setSelectedCity;
 
         confirmButton.onClick.AddListener(ConfirmSelection);
@@ -63,7 +62,7 @@ public class MoveTroopsUI : MonoBehaviour
         selectedCitySv.transform.SetParent(unitsScrollviewLayout.transform);
 
         // Create a new list here to prevent overriding values
-        selectedCitySv.SetContent(new List<Unit>(selectedCity.friendlyUnits), CycleUnit);
+        selectedCitySv.SetContent(new List<Unit>(selectedCity.occupyingUnits), CycleUnit);
 
         scrollviewCityPairs.Add(new ScrollviewCityPair(selectedCity, selectedCitySv));
 
@@ -125,11 +124,11 @@ public class MoveTroopsUI : MonoBehaviour
                 currentCity.SendFriendlyUnitsToNeighbor(pair.scrollview.GetUnits(), pair.city);
             }
         }
-        EventManager.instance.fireSelectCityEvent(currentCity);
+        EventManager.instance.fireSelectedCityUpdatedEvent(currentCity);
     }
 
     void CancelSelection()
     {
-        EventManager.instance.fireSelectCityEvent(currentCity);
+        EventManager.instance.fireSelectedCityUpdatedEvent(currentCity);
     }
 }

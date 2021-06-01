@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 998142808677187485}
   - component: {fileID: 998142808677187486}
   - component: {fileID: 998142808677187487}
-  - component: {fileID: -1176054780374120084}
+  - component: {fileID: 7262739616482314484}
   - component: {fileID: -2935042987833157680}
   - component: {fileID: 7655265852653912020}
   m_Layer: 0
@@ -82,7 +82,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &-1176054780374120084
+--- !u!114 &7262739616482314484
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -91,11 +91,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 998142808677187473}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e57fe0c40faf0347b5025cd32ee384d, type: 3}
+  m_Script: {fileID: 11500000, guid: 494b7345cd1cde4438580a6f862f44dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unselectedMaterial: {fileID: 2100000, guid: 2c61e61acb487ac4087f0b832b27881e, type: 2}
-  selectedMaterial: {fileID: 2100000, guid: e9dd6630054a165498a77252ab6b121c, type: 2}
+  roman: {fileID: 2100000, guid: 2c61e61acb487ac4087f0b832b27881e, type: 2}
+  independent: {fileID: 2100000, guid: 39d2423ce19e6d243abdf7c17ff48876, type: 2}
+  gallic: {fileID: 2100000, guid: d1c405b95e4546d47aed42703656d85e, type: 2}
+  noAllegiance: {fileID: 2100000, guid: 9c89aa37a3edeb04fbceaafdddc38a20, type: 2}
+  highlightedMaterial: {fileID: 2100000, guid: e9dd6630054a165498a77252ab6b121c, type: 2}
 --- !u!114 &-2935042987833157680
 MonoBehaviour:
   m_ObjectHideFlags: 0
