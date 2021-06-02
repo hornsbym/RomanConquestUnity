@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BattleManager : MonoBehaviour 
 {
-    public static BattleManager instance { get; set; }
+    public static BattleManager instance { get; private set; }
 
     void Awake()
     {
@@ -92,21 +92,28 @@ public class BattleManager : MonoBehaviour
     /// </summary>
     private void LaunchRangedAttack(List<Unit> attackers, List<Unit> defenders)
     {
-        /// Calculate combined strength of the attacking units
-        int combinedRangedAttack = 0;
-        foreach (Unit attacker in attackers)
-        {
-            combinedRangedAttack += attacker.ranged;
-        }
+        if (defenders.Count > 0){
+            /// Calculate combined strength of the attacking units
+            int combinedRangedAttack = 0;
+            foreach (Unit attacker in attackers)
+            {
+                combinedRangedAttack += attacker.ranged;
+            }
 
-        /// Calculate how much damage should be disbursed to each defender
-        //! This is imperfect, since it is a float (or double) being truncated into an integer
-        //! The randomness is okay for now, but might need to be addressed later
-        int damagePerDefender = combinedRangedAttack / defenders.Count;
+            /// Calculate how much damage should be disbursed to each defender
+            //! This is imperfect, since it is a float (or double) being truncated into an integer
+            //! The randomness is okay for now, but might need to be addressed later
+            int damagePerDefender = combinedRangedAttack / defenders.Count;
 
-        foreach (Unit defender in defenders)
-        {
-            defender.TakeDamage(damagePerDefender);
+            foreach (Unit defender in defenders)
+            {
+                defender.TakeDamage(damagePerDefender);
+            }
+
+            // TODO:If there are surviving attackers and no defenders, capture city here (?)
+            
+        } else if (attackers.Count > 0 && defenders.Count < 0) {
+            //TODO: Perform city capture here (?)
         }
     }
 
@@ -115,21 +122,27 @@ public class BattleManager : MonoBehaviour
     /// </summary>
     private void LaunchMeleeAttack(List<Unit> attackers, List<Unit> defenders)
     {
-        /// Calculate combined strength of the attacking units
-        int combinedMeleeAttack = 0;
-        foreach (Unit attacker in attackers)
-        {
-            combinedMeleeAttack += attacker.melee;
-        }
+        if (defenders.Count > 0) {
+            /// Calculate combined strength of the attacking units
+            int combinedMeleeAttack = 0;
+            foreach (Unit attacker in attackers)
+            {
+                combinedMeleeAttack += attacker.melee;
+            }
 
-        /// Calculate how much damage should be disbursed to each defender
-        //! This is imperfect, since it is a float (or double) being truncated into an integer
-        //! The randomness is okay for now, but might need to be addressed later
-        int damagePerDefender = combinedMeleeAttack / defenders.Count;
+            /// Calculate how much damage should be disbursed to each defender
+            //! This is imperfect, since it is a float (or double) being truncated into an integer
+            //! The randomness is okay for now, but might need to be addressed later
+            int damagePerDefender = combinedMeleeAttack / defenders.Count;
 
-        foreach (Unit defender in defenders)
-        {
-            defender.TakeDamage(damagePerDefender);
+            foreach (Unit defender in defenders)
+            {
+                defender.TakeDamage(damagePerDefender);
+            }
+
+            // TODO:If there are surviving attackers and no defenders, capture city here (?)
+        } else if (attackers.Count > 0 && defenders.Count < 0) {
+            //TODO: Perform city capture here (?)
         }
     }
 }

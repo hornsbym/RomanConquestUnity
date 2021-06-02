@@ -67,6 +67,8 @@ public class City : Place
         publicUnrest = 0f;
         taxRate = 0f;
         hasAction = true; 
+
+        EventManager.OnUnitDiedEvent += RemoveDeadUnit;
     }
 
     override public void AddOccupyingUnits<T>(List<T> units)
@@ -97,6 +99,11 @@ public class City : Place
 
         /// Send an event informing the rest of the game that the units have changed.
         EventManager.instance.fireUnitsChangedEvent(this);
+    }
+
+    public override void RemoveDeadUnit(Unit deadUnit)
+    {
+        RemoveOccupyingUnits(new List<Unit>(){deadUnit});
     }
 
     /// <summary>

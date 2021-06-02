@@ -28,6 +28,7 @@ public class Road : Place
     void Awake() 
     {
         EventManager.OnTurnEnd += ProgressAllUnits;
+        EventManager.OnUnitDiedEvent += RemoveDeadUnit;
         this.travellingUnits = new List<TravellingUnit>();
         this.occupyingUnits = new List<Unit>();
         this.allegiance = Allegiance.NONE;
@@ -52,20 +53,31 @@ public class Road : Place
 
     override public void RemoveOccupyingUnits(List<Unit> units)
     {
-        // TODO: This needs to be completed for removing dead units from the road
+        // TODO: Delete dead units from the camps too (verify this works)
+        // TODO: Can this be simplified to use "remove all" insead of a for-each loop?
 
-        /// TODO: Is it necessary to destroy the game objects too?
+        // TODO: Is it necessary to destroy the game objects too?
         List<Unit> revisedUnitsList = new List<Unit>(this.occupyingUnits);
+        List<Unit> revisedCity1CampedUnits = new List<Unit>(this.campedOutsideCity1);
+        List<Unit> revisedCity2CampedUnits = new List<Unit>(this.campedOutsideCity2);
         foreach (Unit unit in this.occupyingUnits)
         {
             if (units.Contains(unit))
             {
                 revisedUnitsList.Remove(unit);
+                revisedCity1CampedUnits.Remove(unit);
+                revisedCity2CampedUnits.Remove(unit);
             }
         }
 
         this.occupyingUnits = revisedUnitsList;
+        this.campedOutsideCity1 = revisedCity1CampedUnits;
+        this.campedOutsideCity2 = revisedCity2CampedUnits;
+    }
 
+    public override void RemoveDeadUnit (Unit deadUnit)
+    {
+        RemoveOccupyingUnits(new List<Unit>() { deadUnit });
     }
 
     public void InitializeRoad() {
@@ -134,10 +146,23 @@ public class Road : Place
             }
         }
 
+
         // Replace the units en route list with the units that are still 
         // en route.
         travellingUnits = travellingUnitsBackupList;
         occupyingUnits = occupyingUnitsBackupList;
+        
+        // If the city has no units in it, move the units into the city
+        if (city1.occupyingUnits.Count == 0) {
+            city1.AddOccupyingUnits(campedOutsideCity1);
+            RemoveOccupyingUnits(campedOutsideCity1);
+        }
+
+        if (city2.occupyingUnits.Count == 0)
+        {
+            city2.AddOccupyingUnits(campedOutsideCity2);
+            RemoveOccupyingUnits(campedOutsideCity2);
+        }
     }
 
     /// <summary>

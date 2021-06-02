@@ -29,4 +29,10 @@ public abstract class Place: MonoBehaviour
     /// Remove the list of units from the place's friendly units.
     /// </summary>
     public abstract void RemoveOccupyingUnits (List<Unit> units) ;
+
+    /// <summary>
+    /// Removes dead units from the game.
+    /// Should be fired every time a unit dies.
+    /// </summary>
+    public abstract void RemoveDeadUnit (Unit deadUnit);
 }

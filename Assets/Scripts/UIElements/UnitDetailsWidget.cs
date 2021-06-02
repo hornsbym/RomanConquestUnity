@@ -11,6 +11,7 @@ public class UnitDetailsWidget : MonoBehaviour
     public Text defenseLabel;
     public Text rangedLabel;
     public Text movementLabel;
+    public Text healthValueLabel;
 
     /// <summary>
     /// Adds a unit's stats to the appropriate labels.
@@ -24,6 +25,7 @@ public class UnitDetailsWidget : MonoBehaviour
         rangedLabel.text = unit.ranged.ToString();
         defenseLabel.text = unit.defense.ToString();
         movementLabel.text = unit.movement.ToString();
+        healthValueLabel.text = $"{unit.health} / 80";
     }
 
 }
