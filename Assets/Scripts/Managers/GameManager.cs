@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
     public int turnCount { get; set; }
     
     void Awake() {
-        debugMode = false;
+        debugMode = true;
 
         EventManager.OnSelectedCityUpdated += SelectCity;
         EventManager.OnSelectedRoadUpdatedEvent += SelectRoad;

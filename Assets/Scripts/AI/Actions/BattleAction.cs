@@ -25,9 +25,11 @@ public class BattleAction : Action
 
         switch (attackType) {
             case (AttackType.RANGED):
-                BattleManager.instance.RangedOnlyAttack(attackers, defenders);
+                // TODO: Get the city being assaulted if necessary
+                BattleManager.instance.RangedOnlyAttack(attackers, defenders, null);
                 break;
             case (AttackType.FULL):
+                // TODO: Get the city being assaulted if necessary
                 BattleManager.instance.FullAttack(attackers, defenders);
                 break;
             default:

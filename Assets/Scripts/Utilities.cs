@@ -5,7 +5,7 @@ public class Utilities : MonoBehaviour
 {
     public static Utilities instance;
 
-    void Start() {
+    void Awake() {
         instance = this;
     }
 

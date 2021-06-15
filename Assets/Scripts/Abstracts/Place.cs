@@ -8,7 +8,7 @@ using UnityEngine;
 public abstract class Place: MonoBehaviour
 {
     public string placeName { get; set; }
-    public List<Unit> occupyingUnits { get; protected set; }
+    public virtual List<Unit> occupyingUnits { get; protected set; }
     public Allegiance allegiance { get; set; }
 
     /// <summary>

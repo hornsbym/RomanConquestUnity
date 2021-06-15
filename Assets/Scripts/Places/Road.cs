@@ -9,8 +9,8 @@ public class Road : Place
     public City city2 { get; set; }
 
     // Holding zone for troops that have arrived at an occupied city.
-    public List<Unit> campedOutsideCity1 { get; private set; }
-    public List<Unit> campedOutsideCity2 { get; private set; }
+    public Camp city1Camp { get; private set; }
+    public Camp city2Camp { get; private set; }
 
     // The number of turns it takes to traverse the road
     public int defaultTurnCount { get; set; }
@@ -25,6 +25,30 @@ public class Road : Place
     // inherited from Parent class.
     public List<TravellingUnit> travellingUnits { get; private set; }
 
+    public override List<Unit> occupyingUnits 
+    { 
+        /// <summary>
+        /// Derives the units on the road from the travelling units
+        /// and both city camps.
+        /// </summary>
+        get {
+            List<Unit> u = new List<Unit>();
+            foreach (TravellingUnit tu in travellingUnits) {
+                u.Add(tu.unit);
+            }
+            u.AddRange(city1Camp.occupyingUnits);
+            u.AddRange(city2Camp.occupyingUnits);
+            return u;
+        }
+
+        /// <summary>
+        /// Setting occupying units on a road doesn't make much sense 
+        /// because we're deriving the value from both camps and the 
+        /// travelling units list.
+        /// </summary>
+        protected set => base.occupyingUnits = value; 
+    }
+
     void Awake() 
     {
         EventManager.OnTurnEnd += ProgressAllUnits;
@@ -32,23 +56,20 @@ public class Road : Place
         this.travellingUnits = new List<TravellingUnit>();
         this.occupyingUnits = new List<Unit>();
         this.allegiance = Allegiance.NONE;
-        this.campedOutsideCity1 = new List<Unit>();
-        this.campedOutsideCity2 = new List<Unit>();
     }
-
 
     /// Units will remain as an "OccupyingUnit" of the roas as long as they are
     /// travelling along the road or encamped at a city.
     public override void AddOccupyingUnits<T>(List<T> units)
     {
-        /// Add the units to the occupying units list
-        occupyingUnits.AddRange(units);
+        // /// Add the units to the occupying units list
+        // occupyingUnits.AddRange(units);
 
-        /// Handles changing allegiances if friendly units are the only units in the city.
-        if (this.occupyingUnits.Count > 0)
-        {
-            this.allegiance = occupyingUnits[0].allegiance;
-        }    
+        // /// Handles changing allegiances if friendly units are the only units in the city.
+        // if (this.occupyingUnits.Count > 0)
+        // {
+        //     this.allegiance = occupyingUnits[0].allegiance;
+        // }    
     }
 
     override public void RemoveOccupyingUnits(List<Unit> units)
@@ -57,22 +78,22 @@ public class Road : Place
         // TODO: Can this be simplified to use "remove all" insead of a for-each loop?
 
         // TODO: Is it necessary to destroy the game objects too?
-        List<Unit> revisedUnitsList = new List<Unit>(this.occupyingUnits);
-        List<Unit> revisedCity1CampedUnits = new List<Unit>(this.campedOutsideCity1);
-        List<Unit> revisedCity2CampedUnits = new List<Unit>(this.campedOutsideCity2);
-        foreach (Unit unit in this.occupyingUnits)
-        {
-            if (units.Contains(unit))
-            {
-                revisedUnitsList.Remove(unit);
-                revisedCity1CampedUnits.Remove(unit);
-                revisedCity2CampedUnits.Remove(unit);
-            }
-        }
+        // List<Unit> revisedUnitsList = new List<Unit>(this.occupyingUnits);
+        // foreach (Unit unit in this.occupyingUnits)
+        // {
+        //     if (units.Contains(unit))
+        //     {
+        //         revisedUnitsList.Remove(unit);
+        //     }
+        // }
 
-        this.occupyingUnits = revisedUnitsList;
-        this.campedOutsideCity1 = revisedCity1CampedUnits;
-        this.campedOutsideCity2 = revisedCity2CampedUnits;
+        // this.occupyingUnits = revisedUnitsList;
+
+        // If there are no units encamped along the road, change the road
+        // allegiance to NONE
+        if (occupyingUnits.Count == 0) {
+            this.allegiance = Allegiance.NONE;
+        }
     }
 
     public override void RemoveDeadUnit (Unit deadUnit)
@@ -83,6 +104,10 @@ public class Road : Place
     public void InitializeRoad() {
         // Create name
         placeName = $"{city1.placeName} - {city2.placeName}";
+
+        // Create new camps outside of cities
+        this.city1Camp = new Camp(this, city1);
+        this.city2Camp = new Camp(this, city2);
 
         // Finds the midpoint between the two cities.
         Vector3 city1Position = city1.gameObject.transform.position;
@@ -133,7 +158,6 @@ public class Road : Place
     {   
         // We will add the units still travelling to this list as we iterate.
         List<TravellingUnit> travellingUnitsBackupList = new List<TravellingUnit>();
-        List<Unit> occupyingUnitsBackupList = new List<Unit>();
 
         // Loop over all units going towards the first city.
         foreach(TravellingUnit tUnit in travellingUnits){
@@ -141,36 +165,33 @@ public class Road : Place
             if (arrivedUnit != null && tUnit.destination.CanPlace(arrivedUnit)) {
                 tUnit.destination.AddOccupyingUnits(new List<Unit>(){ arrivedUnit });
             } else {
+                // TODO: Fix this so that we track which units need to be put in each camp
+                // TODO: and then put them all in at once.
                 EncampUnit(tUnit.unit, tUnit.destination);
-                occupyingUnitsBackupList.Add(tUnit.unit);
             }
         }
-
 
         // Replace the units en route list with the units that are still 
         // en route.
         travellingUnits = travellingUnitsBackupList;
-        occupyingUnits = occupyingUnitsBackupList;
         
         // If the city has no units in it, move the units into the city
-        if (city1.occupyingUnits.Count == 0) {
-            city1.AddOccupyingUnits(campedOutsideCity1);
-            RemoveOccupyingUnits(campedOutsideCity1);
+        if (city1.occupyingUnits.Count == 0 && city1Camp.occupyingUnits.Count > 0) {
+            city1Camp.MoveUnitsIntoCity();
         }
 
-        if (city2.occupyingUnits.Count == 0)
+        if (city2.occupyingUnits.Count == 0 && city2Camp.occupyingUnits.Count > 0)
         {
-            city2.AddOccupyingUnits(campedOutsideCity2);
-            RemoveOccupyingUnits(campedOutsideCity2);
+            city2Camp.MoveUnitsIntoCity();
         }
     }
 
     /// <summary>
-    /// Get the units encamped on the road outside of a particular city.
+    /// Get the camp on the road outside of a particular city.
     /// </summary>
-    public List<Unit> GetEncampedUnits(City city) 
+    public Camp GetCityCamp(City city) 
     {
-        return (city == city1) ? this.campedOutsideCity1 : this.campedOutsideCity2 ;
+        return (city == city1) ? this.city1Camp : this.city2Camp ;
     }
 
     /// <summary>
@@ -178,9 +199,9 @@ public class Road : Place
     /// </summary>
     private void EncampUnit(Unit unit, City city) {
         if (city == city1) {
-            this.campedOutsideCity1.Add(unit);
+            this.city1Camp.EncampUnits(new List<Unit>() { unit });
         } else {
-            this.campedOutsideCity2.Add(unit);
+            this.city2Camp.EncampUnits(new List<Unit>() { unit });
         }
     }
 }

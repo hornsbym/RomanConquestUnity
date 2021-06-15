@@ -31,9 +31,9 @@ public class SelectedRoadUI : MonoBehaviour
     private void InitializeCampedUnitsScrollviews(Road selectedRoad)
     {
         city1CampedUnitsScrollview.AddTitle("Camped outside " + selectedRoad.city1.placeName);
-        city1CampedUnitsScrollview.SetContent(selectedRoad.campedOutsideCity1);
+        city1CampedUnitsScrollview.SetContent(selectedRoad.city1Camp.occupyingUnits);
 
         city2CampedUnitsScrollview.AddTitle("Camped outside " + selectedRoad.city2.placeName);
-        city2CampedUnitsScrollview.SetContent(selectedRoad.campedOutsideCity2);
+        city2CampedUnitsScrollview.SetContent(selectedRoad.city2Camp.occupyingUnits);
     }
 }

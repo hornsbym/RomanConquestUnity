@@ -37,6 +37,8 @@ public class AttackUI : MonoBehaviour
     {
         this.selectedRoad = null;
         this.selectedCity = city;
+
+
     }
 
     private void setSelectedRoad(Road road)
@@ -155,7 +157,7 @@ public class AttackUI : MonoBehaviour
 
         // Fill the city 1 camp scrollview
         // Copy units to a new list to prevent overriding values
-        city1CampSv.SetContent(new List<Unit>(selectedRoad.GetEncampedUnits(selectedRoad.city1)), CycleRoadUnit);
+        city1CampSv.SetContent(new List<Unit>(selectedRoad.GetCityCamp(selectedRoad.city1).occupyingUnits), CycleRoadUnit);
         cityScrollviewPairs.Add(new AttackFromCitySvPair(selectedRoad.city1, city1CampSv));
 
         // Create empty scrollviews for the first city
@@ -171,7 +173,7 @@ public class AttackUI : MonoBehaviour
         UnitsScrollview city2CampSv = UnitsScrollview.Instantiate<UnitsScrollview>(unitsScrollviewPrefab);
         city2CampSv.AddTitle("Camp near " + selectedRoad.city2.placeName);
         city2CampSv.transform.SetParent(unitsScrollviewLayout.transform);
-        city2CampSv.SetContent(new List<Unit>(selectedRoad.GetEncampedUnits(selectedRoad.city2)), CycleRoadUnit);
+        city2CampSv.SetContent(new List<Unit>(selectedRoad.GetCityCamp(selectedRoad.city2).occupyingUnits), CycleRoadUnit);
         cityScrollviewPairs.Add(new AttackFromCitySvPair(selectedRoad.city2, city2CampSv));
 
         UnitsScrollview city2AttackingUnitsSv = UnitsScrollview.Instantiate<UnitsScrollview>(unitsScrollviewPrefab);
@@ -264,34 +266,37 @@ public class AttackUI : MonoBehaviour
 
     void ExecuteBattleFromCity(City city) 
     {
+
         foreach (AttackFromCitySvPair pair in cityScrollviewPairs) {
-            if (pair.place != city) {
-                BattleManager.instance.FullAttack(city.occupyingUnits, pair.scrollview.GetUnits());
+            if (pair.place != (Place) city) {
+                List<Unit> attackers = pair.scrollview.GetUnits();
+                List<Unit> defenders = ((Road) pair.place).GetCityCamp(city).occupyingUnits;
+                BattleManager.instance.FullAttack(attackers, defenders, null);
             }
         }
     }
 
     void ExecuteSkirmishFromCity(City city)
     {
-        foreach (AttackFromCitySvPair pair in cityScrollviewPairs)
-        {
-            if (pair.place != city)
-            {
-                BattleManager.instance.RangedOnlyAttack(city.occupyingUnits, pair.scrollview.GetUnits());
+        foreach (AttackFromCitySvPair pair in cityScrollviewPairs){
+            if (pair.place != (Place) city) {
+                List<Unit> attackers = pair.scrollview.GetUnits();
+                List<Unit> defenders = ((Road) pair.place).GetCityCamp(city).occupyingUnits;
+                BattleManager.instance.RangedOnlyAttack(attackers, defenders, null);
             }
         }
     }
 
     void ExecuteBattleFromRoad(Road road)
     {
-        BattleManager.instance.FullAttack(city1RoadScrollviewPair.attackingUnitsScrollview.GetUnits(), city1RoadScrollviewPair.cityBeingAttacked.occupyingUnits);
-        BattleManager.instance.FullAttack(city2RoadScrollviewPair.attackingUnitsScrollview.GetUnits(), city2RoadScrollviewPair.cityBeingAttacked.occupyingUnits);
+        BattleManager.instance.FullAttack(city1RoadScrollviewPair.attackingUnitsScrollview.GetUnits(), city1RoadScrollviewPair.cityBeingAttacked.occupyingUnits, city1RoadScrollviewPair.cityBeingAttacked);
+        BattleManager.instance.FullAttack(city2RoadScrollviewPair.attackingUnitsScrollview.GetUnits(), city2RoadScrollviewPair.cityBeingAttacked.occupyingUnits, city2RoadScrollviewPair.cityBeingAttacked);
     }
 
     void ExecuteSkirmishFromRoad(Road road)
     {
-        BattleManager.instance.RangedOnlyAttack(city1RoadScrollviewPair.attackingUnitsScrollview.GetUnits(), city1RoadScrollviewPair.cityBeingAttacked.occupyingUnits);
-        BattleManager.instance.RangedOnlyAttack(city2RoadScrollviewPair.attackingUnitsScrollview.GetUnits(), city2RoadScrollviewPair.cityBeingAttacked.occupyingUnits);
+        BattleManager.instance.RangedOnlyAttack(city1RoadScrollviewPair.attackingUnitsScrollview.GetUnits(), city1RoadScrollviewPair.cityBeingAttacked.occupyingUnits, null);
+        BattleManager.instance.RangedOnlyAttack(city2RoadScrollviewPair.attackingUnitsScrollview.GetUnits(), city2RoadScrollviewPair.cityBeingAttacked.occupyingUnits, null);
     }
 
     void CancelSelection()
